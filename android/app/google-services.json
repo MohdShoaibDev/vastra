@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "208744374993",
+    "project_id": "vastra-2f3f7",
+    "storage_bucket": "vastra-2f3f7.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:208744374993:android:08c4413f36bdc981d61bf0",
+        "android_client_info": {
+          "package_name": "com.vastra"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCx7UZPloqyEG4c_VTiJpVMZQKiCzxYdyg"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

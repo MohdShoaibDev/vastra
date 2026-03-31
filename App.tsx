@@ -4,42 +4,38 @@
  *
  * @format
  */
-
-import { NewAppScreen } from '@react-native/new-app-screen';
-import { StatusBar, StyleSheet, useColorScheme, View } from 'react-native';
-import {
-  SafeAreaProvider,
-  useSafeAreaInsets,
-} from 'react-native-safe-area-context';
+import { DarkTheme, NavigationContainer } from '@react-navigation/native';
+import NavigationStack from './src/navigation/NavigationStack';
+import Toast from 'react-native-toast-message';
+import { SafeAreaProvider } from 'react-native-safe-area-context';
+import { useSelector } from 'react-redux';
+import { RootState } from './src/redux/store';
+import {ThemeType} from './src/redux/slice'
 
 function App() {
-  const isDarkMode = useColorScheme() === 'dark';
-
+  const theme = useSelector((state:RootState) => state.theme) as ThemeType;
+  console.log('shoaib', theme.bgColor)
   return (
     <SafeAreaProvider>
-      <StatusBar barStyle={isDarkMode ? 'light-content' : 'dark-content'} />
-      <AppContent />
+      <NavigationContainer
+        theme={{
+          ...DarkTheme,
+          dark: true,
+          colors: {
+            background: theme.bgColor,
+            card: '#000000',
+            text: '#FFFFFF',
+            border: 'transparent',
+            primary: '#3B82F6',
+            notification: 'red',
+          },
+        }}
+      >
+        <NavigationStack />
+      </NavigationContainer>
+      <Toast />
     </SafeAreaProvider>
   );
 }
-
-function AppContent() {
-  const safeAreaInsets = useSafeAreaInsets();
-
-  return (
-    <View style={styles.container}>
-      <NewAppScreen
-        templateFileName="App.tsx"
-        safeAreaInsets={safeAreaInsets}
-      />
-    </View>
-  );
-}
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-  },
-});
 
 export default App;

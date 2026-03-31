@@ -2,7 +2,19 @@
   "extends": "@react-native/typescript-config",
   "compilerOptions": {
     "types": ["jest"],
+    "baseUrl": ".",
+    "paths": {
+      "@navigation/*": ["src/navigation/*"],
+      "@screens/*": ["src/screens/*"],
+      "@components/*": ["src/components/*"],
+      "@utility/*": ["src/utility/*"],
+      "@hooks/*": ["src/hooks/*"],
+      "@api/*": ["src/api/*"],
+      "@assets/*": ["src/assets/*"],
+      "@redux/*": ["src/redux/*"]
+    },
+    "target": "es2017"
   },
-  "include": ["**/*.ts", "**/*.tsx"],
-  "exclude": ["**/node_modules", "**/Pods"]
+  "include": ["src/**/*.ts", "src/**/*.tsx", "src/types/**/*.d.ts", "src/utility/appColors.js"],
+  "exclude": ["node_modules", "Pods"]
 }
