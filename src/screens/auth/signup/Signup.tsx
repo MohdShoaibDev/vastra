@@ -20,6 +20,8 @@ import {
 } from '@react-native-firebase/firestore';
 import auth from 'src/firebase/auth';
 import { showToast } from '@utility/helperMethod';
+import { useSelector } from 'react-redux';
+import { RootState } from '@redux/store/store';
 
 type FormData = {
   name: string;
@@ -32,6 +34,7 @@ const Signup: React.FC = () => {
   const { keyboardHeight } = useKeyboardVisibleHook();
   const navigation = useAppNavigation();
   const focused = useIsFocused();
+  const theme = useSelector((state: RootState) => state.theme);
 
   const [secure, setSecure] = useState(true);
   const [secure2, setSecure2] = useState(true);
@@ -59,11 +62,22 @@ const Signup: React.FC = () => {
         data.password,
       );
       const db = getFirestore();
-      await setDoc(doc(db, 'Users', user.user.uid), {
+      await setDoc(doc(db, 'users', user.user.uid), {
         name: data.name,
         email: data.email.toLowerCase(),
         createdAt: serverTimestamp(),
       });
+      await Promise.all([
+        setDoc(doc(db, 'users', user.user.uid, 'cart'), {
+          createdAt: serverTimestamp(),
+        }),
+        setDoc(doc(db, 'users', user.user.uid, 'wishlist'), {
+          createdAt: serverTimestamp(),
+        }),
+        setDoc(doc(db, 'users', user.user.uid, 'orders'), {
+          createdAt: serverTimestamp(),
+        }),
+      ]);
     } catch (err: any) {
       console.log('error in signup', err?.message);
     } finally {
@@ -97,7 +111,10 @@ const Signup: React.FC = () => {
   return (
     <>
       <KeyboardAwareScrollView
-        style={styles.container}
+        style={{
+          ...styles.container,
+          backgroundColor: theme.bgColor,
+        }}
         scrollEnabled={keyboardHeight > 0}
       >
         <Header
@@ -107,17 +124,25 @@ const Signup: React.FC = () => {
           showBack={navigation.canGoBack()}
         />
 
-        <View style={styles.card}>
+        <View style={{ ...styles.card, backgroundColor: theme.card }}>
           <View style={styles.title}>
-            <Text style={styles.welcome}>Welcome</Text>
-            <Text style={styles.welcome}>to</Text>
+            <Text style={{ ...styles.welcome, color: theme.mainTextColor }}>
+              Welcome
+            </Text>
+            <Text style={{ ...styles.welcome, color: theme.mainTextColor }}>
+              to
+            </Text>
             <Text style={styles.vastra}>Vastra</Text>
           </View>
 
-          <Text style={styles.heading}>Register now!</Text>
+          <Text style={{ ...styles.heading, color: theme.mainTextColor }}>
+            Register now!
+          </Text>
 
           {/* Full Name */}
-          <Text style={styles.label}>Full Name</Text>
+          <Text style={{ ...styles.label, color: theme.secondaryTextColor }}>
+            Full Name
+          </Text>
 
           <Controller
             control={control}
@@ -141,7 +166,9 @@ const Signup: React.FC = () => {
           <View style={{ height: 10 }} />
 
           {/* Email */}
-          <Text style={styles.label}>Email</Text>
+          <Text style={{ ...styles.label, color: theme.secondaryTextColor }}>
+            Email
+          </Text>
 
           <Controller
             control={control}
@@ -167,7 +194,9 @@ const Signup: React.FC = () => {
           <View style={{ height: 10 }} />
 
           {/* Password */}
-          <Text style={styles.label}>Password</Text>
+          <Text style={{ ...styles.label, color: theme.secondaryTextColor }}>
+            Password
+          </Text>
 
           <Controller
             control={control}
@@ -194,7 +223,9 @@ const Signup: React.FC = () => {
           <View style={{ height: 10 }} />
 
           {/* Confirm Password */}
-          <Text style={styles.label}>Confirm Password</Text>
+          <Text style={{ ...styles.label, color: theme.secondaryTextColor }}>
+            Confirm Password
+          </Text>
 
           <Controller
             control={control}
@@ -234,7 +265,9 @@ const Signup: React.FC = () => {
           />
 
           <View style={styles.signin}>
-            <Text style={styles.text1}>Already have an account?</Text>
+            <Text style={{ ...styles.text1, color: theme.secondaryTextColor }}>
+              Already have an account?
+            </Text>
             <Text onPress={navigateToSignin} style={styles.text2}>
               SignIn
             </Text>

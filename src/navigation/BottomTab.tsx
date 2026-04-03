@@ -9,8 +9,8 @@ import Cart from '@screens/cart/Cart';
 import Profile from '@screens/profile/Profile';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useSelector } from 'react-redux';
-import { RootState } from '@redux/store';
-import { ThemeType } from '@redux/slice';
+import { RootState } from '@redux/store/store';
+import { ThemeType } from '@redux/slice/themeSlice';
 
 const Tab = createBottomTabNavigator();
 

@@ -7,9 +7,12 @@ import {
   ViewStyle,
 } from 'react-native';
 import Feather from 'react-native-vector-icons/Feather';
-import { useNavigation } from '@react-navigation/native';
-import { useStatusBarHeight } from '@hooks/useStatusBarHeight';
 import { commonColors } from '@utility/appColors';
+import { useSelector } from 'react-redux';
+import { RootState } from '@redux/store/store';
+import { useStatusBarHeight } from '@hooks/useStatusBarHeight';
+import useAppNavigation from '@hooks/useAppNavigation';
+import { ScreenNames } from '@utility/screenNames';
 
 interface Props {
   title: string;
@@ -24,27 +27,34 @@ const Header = ({
   showNotification = true,
   style = {},
 }: Props) => {
-  const navigation = useNavigation();
+  const navigation = useAppNavigation();
+  const theme = useSelector((state: RootState) => state.theme);
   const { statusBarHeight } = useStatusBarHeight();
 
+  const navigateToNotificationScreen = () => {
+    navigation.navigate(ScreenNames.Notifications);
+  };
+
   return (
-    <View style={{ ...styles.container, marginTop: statusBarHeight, ...style }}>
+    <View style={{ ...styles.container, ...style, marginTop: statusBarHeight }}>
       <View style={styles.left}>
         {showBack && (
           <TouchableOpacity onPress={() => navigation.goBack()}>
-            <Feather name="arrow-left" size={24} color="#000" />
+            <Feather name="arrow-left" size={24} color={theme.mainTextColor} />
           </TouchableOpacity>
         )}
       </View>
 
       <View style={styles.center}>
-        <Text style={styles.title}>{title}</Text>
+        <Text style={{ ...styles.title, color: theme.mainTextColor }}>
+          {title}
+        </Text>
       </View>
 
       <View style={styles.right}>
         {showNotification && (
-          <TouchableOpacity>
-            <Feather name="bell" size={22} color="#000" />
+          <TouchableOpacity onPress={navigateToNotificationScreen}>
+            <Feather name="bell" size={22} color={theme.mainTextColor} />
           </TouchableOpacity>
         )}
       </View>
@@ -79,6 +89,5 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 18,
     fontWeight: '600',
-    color: commonColors.black,
   },
 });

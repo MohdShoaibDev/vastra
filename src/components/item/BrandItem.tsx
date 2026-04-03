@@ -1,4 +1,4 @@
-import { RootState } from '@redux/store';
+import { RootState } from '@redux/store/store';
 import { commonColors } from '@utility/appColors';
 import React from 'react';
 import { View, Text, StyleSheet } from 'react-native';

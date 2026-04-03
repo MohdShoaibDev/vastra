@@ -1,11 +1,10 @@
-import appColors from '@utility/appColors';
-import { getWidthRespectiveToScreen } from '@utility/helperMethod';
+import { commonColors } from '@utility/appColors';
+import { getHeightRespectiveToScreen, getWidthRespectiveToScreen } from '@utility/helperMethod';
 import { StyleSheet } from 'react-native';
 
 export default StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: appColors.white,
   },
 
   mainImage: {
@@ -31,7 +30,7 @@ export default StyleSheet.create({
   },
 
   category: {
-    color: appColors.black,
+    color: commonColors.black,
     fontSize: 14,
   },
 
@@ -64,7 +63,7 @@ export default StyleSheet.create({
   },
 
   sizeGuide: {
-    color: appColors.lightGray,
+    color: commonColors.lightGray,
   },
 
   sizeContainer: {
@@ -80,14 +79,15 @@ export default StyleSheet.create({
 
   sizeBox: {
     padding: 14,
-    backgroundColor: appColors.veryLightGray,
+    backgroundColor: commonColors.veryLightGray,
     borderRadius: 10,
-    width: 55,
+    width: 65,
     alignItems: 'center',
   },
 
   sizeSelected: {
-    backgroundColor: appColors.black,
+    borderWidth: 1,
+    borderColor: commonColors.primaryTextColor
   },
 
   sizeDisabled: {
@@ -105,7 +105,7 @@ export default StyleSheet.create({
   },
 
   sizeTextSelected: {
-    color: appColors.white,
+    color: commonColors.white,
   },
 
   descriptionContainer: {
@@ -114,7 +114,7 @@ export default StyleSheet.create({
 
   description: {
     marginTop: 8,
-    color: appColors.lightBlack,
+    color: commonColors.lightBlack,
     lineHeight: 20,
   },
 
@@ -129,7 +129,7 @@ export default StyleSheet.create({
   },
 
   viewAll: {
-    color: appColors.lightGray,
+    color: commonColors.lightGray,
   },
 
   reviewCard: {
@@ -150,7 +150,7 @@ export default StyleSheet.create({
   },
 
   reviewText: {
-    color: appColors.lightBlack,
+    color: commonColors.lightBlack,
     fontSize: 13,
   },
 
@@ -165,15 +165,14 @@ export default StyleSheet.create({
   },
 
   cartButton: {
-    backgroundColor: appColors.primaryTextColor,
-    padding: 18,
+    height: getHeightRespectiveToScreen(7),
     alignItems: 'center',
     borderTopRightRadius: 0,
-    borderTopLeftRadius: 0
+    borderTopLeftRadius: 0,
   },
 
   cartText: {
-    color: appColors.white,
+    color: commonColors.white,
     fontSize: 18,
     fontWeight: 'bold',
   },

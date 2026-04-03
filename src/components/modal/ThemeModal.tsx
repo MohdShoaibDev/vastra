@@ -7,8 +7,8 @@ import {
   StyleSheet,
   useColorScheme,
 } from 'react-native';
-import { appThemeHandler } from '@redux/slice';
-import { RootState } from '@redux/store';
+import { appThemeHandler } from '@redux/slice/themeSlice';
+import { RootState } from '@redux/store/store';
 import { commonColors, darkColors, lightColors } from '@utility/appColors';
 import { useDispatch, useSelector } from 'react-redux';
 import { storage } from '@utility/helperMethod';

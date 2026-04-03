@@ -11,7 +11,8 @@ import auth from 'src/firebase/auth';
 import { showToast, storage } from '@utility/helperMethod';
 import ThemeModal from '@components/modal/ThemeModal';
 import { useSelector } from 'react-redux';
-import { RootState } from '@redux/store';
+import { RootState } from '@redux/store/store';
+import { useStatusBarHeight } from '@hooks/useStatusBarHeight';
 
 const settingsData = [
   { id: '1', title: 'Orders', icon: 'bag-outline' },
@@ -21,45 +22,48 @@ const settingsData = [
   { id: '10', title: 'Logout', icon: 'log-out-outline' },
 ];
 
-const ProfileHeader = memo(({ theme }: RootState) => (
-  <>
-    <View style={styles.header}>
-      <Text style={{ ...styles.headerTitle, color: theme.mainTextColor }}>
-        Profile
-      </Text>
-    </View>
-
-    <View style={styles.profileSection}>
-      <View style={styles.imageWrapper}>
-        <FastImage
-          source={{
-            uri: 'https://picsum.photos/id/237',
-            priority: FastImage.priority.high,
-          }}
-          resizeMode={FastImage.resizeMode.cover}
-          style={styles.image}
-        />
-
-        <TouchableOpacity style={styles.editBtn}>
-          <Icon
-            name="create-outline"
-            size={14}
-            color={commonColors.primaryTextColor}
-          />
-          <Text style={styles.editText}>Edit</Text>
-        </TouchableOpacity>
+const ProfileHeader = memo(({ theme }: RootState) => {
+  const { statusBarHeight } = useStatusBarHeight();
+  return (
+    <>
+      <View style={{ marginTop: statusBarHeight }}>
+        <Text style={{ ...styles.headerTitle, color: theme.mainTextColor }}>
+          Profile
+        </Text>
       </View>
 
-      <Text style={{ ...styles.name, color: theme.mainTextColor }}>
-        Mohd Shoaib
-      </Text>
-    </View>
+      <View style={styles.profileSection}>
+        <View style={styles.imageWrapper}>
+          <FastImage
+            source={{
+              uri: 'https://picsum.photos/id/237',
+              priority: FastImage.priority.high,
+            }}
+            resizeMode={FastImage.resizeMode.cover}
+            style={styles.image}
+          />
 
-    <Text style={{ ...styles.sectionTitle, color: theme.mainTextColor }}>
-      Settings
-    </Text>
-  </>
-));
+          <TouchableOpacity style={styles.editBtn}>
+            <Icon
+              name="create-outline"
+              size={14}
+              color={commonColors.primaryTextColor}
+            />
+            <Text style={styles.editText}>Edit</Text>
+          </TouchableOpacity>
+        </View>
+
+        <Text style={{ ...styles.name, color: theme.mainTextColor }}>
+          Mohd Shoaib
+        </Text>
+      </View>
+
+      <Text style={{ ...styles.sectionTitle, color: theme.mainTextColor }}>
+        Settings
+      </Text>
+    </>
+  );
+});
 
 const Profile = () => {
   const theme = useSelector((state: RootState) => state.theme);
@@ -123,12 +127,11 @@ const Profile = () => {
   };
 
   const subComponentRender = (item: any) => {
-    if (item.name === 'Theme') {
+    if (item.title === 'Theme') {
       const _theme = storage.getString('theme');
-      if (!_theme) return null;
       return (
-        <Text style={{ ...styles.rightText, color: theme.mainTextColor }}>
-          {_theme[0]?.toUpperCase() + _theme?.slice(1)}
+        <Text style={{ ...styles.rightText, color: theme.secondaryTextColor }}>
+          {_theme ? _theme[0]?.toUpperCase() + _theme?.slice(1) : 'Light'}
         </Text>
       );
     }

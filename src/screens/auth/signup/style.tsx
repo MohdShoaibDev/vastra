@@ -1,15 +1,14 @@
 import { StyleSheet } from 'react-native';
-import appColors from '@utility/appColors';
+import { commonColors } from '@utility/appColors';
 
 export default StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: appColors.bgColor,
     paddingHorizontal: 20,
   },
 
   header: {
-    backgroundColor: appColors.transparent,
+    backgroundColor: commonColors.transparent,
   },
 
   title: {
@@ -20,7 +19,6 @@ export default StyleSheet.create({
 
   card: {
     marginTop: 30,
-    backgroundColor: '#fff',
     borderRadius: 25,
     padding: 25,
   },
@@ -30,13 +28,12 @@ export default StyleSheet.create({
     fontWeight: '600',
     textAlign: 'center',
     letterSpacing: 0.3,
-    color: appColors.black,
   },
 
   vastra: {
     fontSize: 22,
     fontWeight: '600',
-    color: '#3B82F6',
+    color: commonColors.primaryTextColor,
   },
 
   heading: {
@@ -45,13 +42,11 @@ export default StyleSheet.create({
     textAlign: 'center',
     letterSpacing: 0.3,
     marginBottom: 20,
-    color: appColors.black,
   },
 
   label: {
     marginTop: 10,
     fontSize: 14,
-    color: appColors.black,
     fontWeight: '400',
   },
 
@@ -71,26 +66,26 @@ export default StyleSheet.create({
     width: 16,
     height: 16,
     borderWidth: 1,
-    borderColor: '#999',
+    borderColor: commonColors.veryLightGray,
     marginRight: 8,
   },
 
   checked: {
-    backgroundColor: '#3B82F6',
+    backgroundColor: commonColors.primaryTextColor,
   },
 
   rememberText: {
     fontSize: 13,
-    color: '#666',
+    color: commonColors.lightGray,
   },
 
   forgot: {
-    color: appColors.primaryTextColor,
+    color: commonColors.primaryTextColor,
     fontSize: 13,
   },
 
   loginBtn: {
-    backgroundColor: appColors.primaryTextColor,
+    backgroundColor: commonColors.primaryTextColor,
     height: 50,
     borderRadius: 17,
     justifyContent: 'center',
@@ -99,7 +94,7 @@ export default StyleSheet.create({
   },
 
   loginText: {
-    color: '#fff',
+    color: commonColors.white,
     fontWeight: '600',
     fontSize: 16,
   },
@@ -118,7 +113,7 @@ export default StyleSheet.create({
   socialBtn: {
     width: 50,
     height: 50,
-    backgroundColor: '#F1F3F6',
+    backgroundColor: commonColors.white,
     justifyContent: 'center',
     alignItems: 'center',
     borderRadius: 15,
@@ -126,11 +121,11 @@ export default StyleSheet.create({
 
   google: {
     borderWidth: 1,
-    borderColor: appColors.primaryTextColor,
+    borderColor: commonColors.primaryTextColor,
   },
 
   googleText: {
-    color: appColors.primaryTextColor,
+    color: commonColors.primaryTextColor,
   },
 
   signin: {
@@ -142,12 +137,12 @@ export default StyleSheet.create({
   },
 
   text1: {
-    color: appColors.black,
+    color: commonColors.black,
     fontSize: 14,
   },
 
   text2: {
-    color: appColors.primaryTextColor,
+    color: commonColors.primaryTextColor,
     fontSize: 14,
     fontWeight: '600',
   },

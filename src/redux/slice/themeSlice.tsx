@@ -8,6 +8,7 @@ export type ThemeType = {
   primaryIconColor: string;
   secondIconColor: string;
   secondaryBgColor: string;
+  textFieldBgColor: string;
 };
 
 const initialState: ThemeType = {
@@ -18,6 +19,7 @@ const initialState: ThemeType = {
   primaryIconColor: 'black',
   secondIconColor: 'gray',
   secondaryBgColor: 'white',
+  textFieldBgColor: '#1E1E1E',
 };
 
 const themeSlice = createSlice({

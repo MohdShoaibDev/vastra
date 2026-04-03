@@ -1,5 +1,5 @@
-import {commonColors} from "@utility/appColors";
-import { StyleSheet } from "react-native";
+import { commonColors } from '@utility/appColors';
+import { StyleSheet } from 'react-native';
 
 export default StyleSheet.create({
   container: {
@@ -7,14 +7,8 @@ export default StyleSheet.create({
     paddingHorizontal: 16,
   },
 
-  header: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    marginTop: 50,
-  },
-
   headerTitle: {
+    textAlign: 'center',
     fontSize: 22,
     fontWeight: '600',
   },

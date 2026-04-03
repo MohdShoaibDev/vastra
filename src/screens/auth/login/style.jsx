@@ -19,7 +19,6 @@ export default StyleSheet.create({
 
   card: {
     marginTop: 30,
-    backgroundColor: '#fff',
     borderRadius: 25,
     padding: 25,
   },
@@ -29,7 +28,6 @@ export default StyleSheet.create({
     fontWeight: '600',
     textAlign: 'center',
     letterSpacing: 0.3,
-    color: commonColors.black,
   },
 
   vastra: {
@@ -50,7 +48,6 @@ export default StyleSheet.create({
   label: {
     marginTop: 10,
     fontSize: 14,
-    color: commonColors.black,
     fontWeight: '400',
   },
 
@@ -141,7 +138,6 @@ export default StyleSheet.create({
   },
 
   text1: {
-    color: commonColors.black,
     fontSize: 14,
   },
 

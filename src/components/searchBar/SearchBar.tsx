@@ -9,7 +9,7 @@ import {
 import { commonColors } from '@utility/appColors';
 import Feather from 'react-native-vector-icons/Feather';
 import { useSelector } from 'react-redux';
-import { RootState } from '@redux/store';
+import { RootState } from '@redux/store/store';
 
 interface SearchBarProps {
   onSearch: (text: string) => void;

@@ -8,12 +8,14 @@ export const products = [
     id: 1,
     title: 'Nike Sportswear Club Hoodie',
     price: 89,
-    image,
+    image:
+      'http://localhost:8081/assets/src/assets/images/hood.png?platform=ios&hash=d1623f0f0cd394eedaf9156afc11dfb0',
     brand: 'nike',
     description:
       'A classic staple combining soft fleece with a simple, street-ready style.',
     totalRating: 4.8,
     reviewCount: 154,
+    size: { s: 87, m: 37, l: 8, xl: 56 },
     reviews: [
       {
         user: 'Alex M.',
@@ -33,12 +35,14 @@ export const products = [
     id: 2,
     title: 'Adidas Cotton Training T-Shirt',
     price: 79,
-    image,
+    image:
+      'http://localhost:8081/assets/src/assets/images/hood.png?platform=ios&hash=d1623f0f0cd394eedaf9156afc11dfb0',
     brand: 'adidas',
     description:
       'Breathable cotton tee designed to keep you cool during intense gym sessions.',
     totalRating: 4.5,
     reviewCount: 92,
+    size: { s: 87, m: 37, l: 80, xl: 56 },
     reviews: [
       {
         user: 'Sarah L.',
@@ -52,12 +56,14 @@ export const products = [
     id: 3,
     title: 'Puma Active Sports Jacket',
     price: 95,
-    image,
+    image:
+      'http://localhost:8081/assets/src/assets/images/hood.png?platform=ios&hash=d1623f0f0cd394eedaf9156afc11dfb0',
     brand: 'puma',
     description:
       'Lightweight windbreaker featuring moisture-wicking technology for outdoor runs.',
     totalRating: 4.2,
     reviewCount: 61,
+    size: { s: 87, m: 37, l: 8, xl: 56 },
     reviews: [
       {
         user: 'Mike R.',
@@ -71,12 +77,14 @@ export const products = [
     id: 4,
     title: 'Levis Casual Denim Shirt',
     price: 92,
-    image,
+    image:
+      'http://localhost:8081/assets/src/assets/images/hood.png?platform=ios&hash=d1623f0f0cd394eedaf9156afc11dfb0',
     brand: 'levis',
     description:
       'Timeless denim craftsmanship with a modern, tailored silhouette.',
     totalRating: 4.9,
     reviewCount: 210,
+    size: { s: 87, m: 37, l: 18, xl: 56 },
     reviews: [
       {
         user: 'Chris T.',
@@ -90,11 +98,13 @@ export const products = [
     id: 5,
     title: 'Allen Solly Slim Fit Formal Shirt',
     price: 88,
-    image,
+    image:
+      'http://localhost:8081/assets/src/assets/images/hood.png?platform=ios&hash=d1623f0f0cd394eedaf9156afc11dfb0',
     brand: 'allen solly',
     description: 'Sharp, sophisticated look for the modern professional.',
     totalRating: 4.6,
     reviewCount: 78,
+    size: { s: 87, m: 37, l: 8, xl: 56 },
     reviews: [
       {
         user: 'David W.',
@@ -108,12 +118,14 @@ export const products = [
     id: 6,
     title: 'Peter England Office Wear Shirt',
     price: 83,
-    image,
+    image:
+      'http://localhost:8081/assets/src/assets/images/hood.png?platform=ios&hash=d1623f0f0cd394eedaf9156afc11dfb0',
     brand: 'peter england',
     description:
       'Durable, easy-to-iron fabric designed for the daily 9-to-5 grind.',
     totalRating: 3.9,
     reviewCount: 45,
+    size: { s: 87, m: 37, l: 8, xl: 56 },
     reviews: [
       {
         user: 'Kevin G.',
@@ -127,12 +139,14 @@ export const products = [
     id: 7,
     title: 'Snitch Streetwear Oversized Tee',
     price: 72,
-    image,
+    image:
+      'http://localhost:8081/assets/src/assets/images/hood.png?platform=ios&hash=d1623f0f0cd394eedaf9156afc11dfb0',
     brand: 'snitch',
     description:
       'Drop-shoulder aesthetic for the ultimate urban streetwear look.',
     totalRating: 4.7,
     reviewCount: 189,
+    size: { s: 87, m: 37, l: 8, xl: 56 },
     reviews: [
       {
         user: 'Leo X.',
@@ -146,12 +160,14 @@ export const products = [
     id: 8,
     title: 'Nike Running Performance Jacket',
     price: 97,
-    image,
+    image:
+      'http://localhost:8081/assets/src/assets/images/hood.png?platform=ios&hash=d1623f0f0cd394eedaf9156afc11dfb0',
     brand: 'nike',
     description:
       'Weather-resistant shell with reflective elements for night visibility.',
     totalRating: 4.9,
     reviewCount: 84,
+    size: { s: 87, m: 7, l: 98, xl: 56 },
     reviews: [
       {
         user: 'Ryan B.',
@@ -165,12 +181,14 @@ export const products = [
     id: 9,
     title: 'Adidas Essentials Cotton Hoodie',
     price: 91,
-    image,
+    image:
+      'http://localhost:8081/assets/src/assets/images/hood.png?platform=ios&hash=d1623f0f0cd394eedaf9156afc11dfb0',
     brand: 'adidas',
     description:
       'The iconic three-stripe design in a cozy, heavy-weight cotton blend.',
     totalRating: 4.4,
     reviewCount: 112,
+    size: { s: 87, m: 7, l: 98, xl: 56 },
     reviews: [
       {
         user: 'Emma S.',
@@ -182,9 +200,11 @@ export const products = [
   },
   {
     id: 10,
+    size: { s: 87, m: 7, l: 98, xl: 56 },
     title: 'Puma Classic Training Sweatshirt',
     price: 85,
-    image,
+    image:
+      'http://localhost:8081/assets/src/assets/images/hood.png?platform=ios&hash=d1623f0f0cd394eedaf9156afc11dfb0',
     brand: 'puma',
     description:
       'Minimalist design with a focus on range of motion and comfort.',
@@ -202,8 +222,10 @@ export const products = [
   {
     id: 11,
     title: 'Levis Regular Fit Polo Shirt',
+    size: { s: 87, m: 7, l: 98, xl: 56 },
     price: 74,
-    image,
+    image:
+      'http://localhost:8081/assets/src/assets/images/hood.png?platform=ios&hash=d1623f0f0cd394eedaf9156afc11dfb0',
     brand: 'levis',
     description:
       'Versatile polo that transitions easily from the golf course to dinner.',
@@ -222,7 +244,9 @@ export const products = [
     id: 12,
     title: 'Allen Solly Casual Weekend Shirt',
     price: 78,
-    image,
+    size: { s: 87, m: 7, l: 98, xl: 56 },
+    image:
+      'http://localhost:8081/assets/src/assets/images/hood.png?platform=ios&hash=d1623f0f0cd394eedaf9156afc11dfb0',
     brand: 'allen solly',
     description: 'Relaxed fabrics and playful patterns for your time off.',
     totalRating: 4.5,
@@ -240,7 +264,9 @@ export const products = [
     id: 13,
     title: 'Peter England Smart Formal Shirt',
     price: 96,
-    image,
+    size: { s: 87, m: 7, l: 98, xl: 56 },
+    image:
+      'http://localhost:8081/assets/src/assets/images/hood.png?platform=ios&hash=d1623f0f0cd394eedaf9156afc11dfb0',
     brand: 'peter england',
     description: 'Premium cotton finish for high-stakes meetings and events.',
     totalRating: 4.8,
@@ -258,7 +284,9 @@ export const products = [
     id: 14,
     title: 'Snitch Printed Streetwear Shirt',
     price: 69,
-    image,
+    size: { s: 87, m: 7, l: 98, xl: 56 },
+    image:
+      'http://localhost:8081/assets/src/assets/images/hood.png?platform=ios&hash=d1623f0f0cd394eedaf9156afc11dfb0',
     brand: 'snitch',
     description:
       'Bold graphics and edgy prints to make a statement in the crowd.',
@@ -277,7 +305,9 @@ export const products = [
     id: 15,
     title: 'Nike Flex Training T-Shirt',
     price: 73,
-    image,
+    size: { s: 87, m: 7, l: 98, xl: 56 },
+    image:
+      'http://localhost:8081/assets/src/assets/images/hood.png?platform=ios&hash=d1623f0f0cd394eedaf9156afc11dfb0',
     brand: 'nike',
     description: 'Highly stretchable fabric that moves with your body.',
     totalRating: 4.7,
@@ -295,7 +325,9 @@ export const products = [
     id: 16,
     title: 'Adidas Running Club Tee',
     price: 90,
-    image,
+    size: { s: 87, m: 7, l: 98, xl: 56 },
+    image:
+      'http://localhost:8081/assets/src/assets/images/hood.png?platform=ios&hash=d1623f0f0cd394eedaf9156afc11dfb0',
     brand: 'adidas',
     description: 'Lightweight tech-fabric with AEROREADY moisture management.',
     totalRating: 4.6,
@@ -311,9 +343,11 @@ export const products = [
   },
   {
     id: 17,
+    size: { s: 87, m: 7, l: 98, xl: 56 },
     title: 'Puma Training Gym T-Shirt',
     price: 86,
-    image,
+    image:
+      'http://localhost:8081/assets/src/assets/images/hood.png?platform=ios&hash=d1623f0f0cd394eedaf9156afc11dfb0',
     brand: 'puma',
     description: 'Ergonomic cut lines for effortless movement during training.',
     totalRating: 4.4,
@@ -331,7 +365,9 @@ export const products = [
     id: 18,
     title: 'Levis Classic Cotton Shirt',
     price: 93,
-    image,
+    size: { s: 87, m: 7, l: 98, xl: 56 },
+    image:
+      'http://localhost:8081/assets/src/assets/images/hood.png?platform=ios&hash=d1623f0f0cd394eedaf9156afc11dfb0',
     brand: 'levis',
     description: 'The fundamental button-down every wardrobe needs.',
     totalRating: 4.8,
@@ -349,7 +385,9 @@ export const products = [
     id: 19,
     title: 'Allen Solly Formal Slim Shirt',
     price: 87,
-    image,
+    size: { s: 87, m: 7, l: 98, xl: 56 },
+    image:
+      'http://localhost:8081/assets/src/assets/images/hood.png?platform=ios&hash=d1623f0f0cd394eedaf9156afc11dfb0',
     brand: 'allen solly',
     description: 'Contoured fit that provides a sharp, modern silhouette.',
     totalRating: 4.5,
@@ -365,9 +403,11 @@ export const products = [
   },
   {
     id: 20,
+    size: { s: 87, m: 7, l: 98, xl: 56 },
     title: 'Peter England Office Cotton Shirt',
     price: 80,
-    image,
+    image:
+      'http://localhost:8081/assets/src/assets/images/hood.png?platform=ios&hash=d1623f0f0cd394eedaf9156afc11dfb0',
     brand: 'peter england',
     description: 'Soft-touch cotton that stays comfortable all day long.',
     totalRating: 4.2,
@@ -383,9 +423,11 @@ export const products = [
   },
   {
     id: 21,
+    size: { s: 87, m: 7, l: 98, xl: 56 },
     title: 'Snitch Modern Street Hoodie',
     price: 94,
-    image,
+    image:
+      'http://localhost:8081/assets/src/assets/images/hood.png?platform=ios&hash=d1623f0f0cd394eedaf9156afc11dfb0',
     brand: 'snitch',
     description: 'Heavyweight fabric with a contemporary boxy fit.',
     totalRating: 4.9,
@@ -403,7 +445,9 @@ export const products = [
     id: 22,
     title: 'Nike Dri-Fit Performance Tee',
     price: 76,
-    image,
+    size: { s: 87, m: 7, l: 98, xl: 56 },
+    image:
+      'http://localhost:8081/assets/src/assets/images/hood.png?platform=ios&hash=d1623f0f0cd394eedaf9156afc11dfb0',
     brand: 'nike',
     description: 'Signature sweat-wicking technology for dry comfort.',
     totalRating: 4.7,
@@ -419,9 +463,11 @@ export const products = [
   },
   {
     id: 23,
+    size: { s: 87, m: 7, l: 98, xl: 56 },
     title: 'Adidas Originals Casual Hoodie',
     price: 98,
-    image,
+    image:
+      'http://localhost:8081/assets/src/assets/images/hood.png?platform=ios&hash=d1623f0f0cd394eedaf9156afc11dfb0',
     brand: 'adidas',
     description: 'Retro-inspired design with the iconic Trefoil logo.',
     totalRating: 4.8,
@@ -437,9 +483,11 @@ export const products = [
   },
   {
     id: 24,
+    size: { s: 87, m: 7, l: 98, xl: 56 },
     title: 'Puma Street Style Hoodie',
     price: 84,
-    image,
+    image:
+      'http://localhost:8081/assets/src/assets/images/hood.png?platform=ios&hash=d1623f0f0cd394eedaf9156afc11dfb0',
     brand: 'puma',
     description: 'Bold branding and a cozy fleece interior for everyday wear.',
     totalRating: 4.3,
@@ -455,9 +503,11 @@ export const products = [
   },
   {
     id: 25,
+    size: { s: 87, m: 7, l: 98, xl: 56 },
     title: 'Levis Classic Denim Jacket',
     price: 99,
-    image,
+    image:
+      'http://localhost:8081/assets/src/assets/images/hood.png?platform=ios&hash=d1623f0f0cd394eedaf9156afc11dfb0',
     brand: 'levis',
     description: 'The original denim jacket since 1967. A true icon.',
     totalRating: 5.0,
@@ -473,9 +523,11 @@ export const products = [
   },
   {
     id: 26,
+    size: { s: 87, m: 7, l: 98, xl: 56 },
     title: 'Allen Solly Casual Polo T-Shirt',
     price: 75,
-    image,
+    image:
+      'http://localhost:8081/assets/src/assets/images/hood.png?platform=ios&hash=d1623f0f0cd394eedaf9156afc11dfb0',
     brand: 'allen solly',
     description: 'Vibrant colors and a relaxed fit for social outings.',
     totalRating: 4.1,
@@ -491,9 +543,11 @@ export const products = [
   },
   {
     id: 27,
+    size: { s: 87, m: 7, l: 98, xl: 56 },
     title: 'Peter England Premium Formal Shirt',
     price: 89,
-    image,
+    image:
+      'http://localhost:8081/assets/src/assets/images/hood.png?platform=ios&hash=d1623f0f0cd394eedaf9156afc11dfb0',
     brand: 'peter england',
     description: 'High-thread-count fabric for a luxurious feel and look.',
     totalRating: 4.6,
@@ -509,9 +563,11 @@ export const products = [
   },
   {
     id: 28,
+    size: { s: 87, m: 7, l: 98, xl: 56 },
     title: 'Snitch Oversized Cotton Tee',
     price: 77,
-    image,
+    image:
+      'http://localhost:8081/assets/src/assets/images/hood.png?platform=ios&hash=d1623f0f0cd394eedaf9156afc11dfb0',
     brand: 'snitch',
     description: 'Extra-roomy fit made from premium 100% cotton.',
     totalRating: 4.7,
@@ -527,9 +583,11 @@ export const products = [
   },
   {
     id: 29,
+    size: { s: 87, m: 7, l: 98, xl: 56 },
     title: 'Nike Sportswear Essential Hoodie',
     price: 92,
-    image,
+    image:
+      'http://localhost:8081/assets/src/assets/images/hood.png?platform=ios&hash=d1623f0f0cd394eedaf9156afc11dfb0',
     brand: 'nike',
     description: 'Simple, effective, and incredibly comfortable.',
     totalRating: 4.5,
@@ -545,9 +603,11 @@ export const products = [
   },
   {
     id: 30,
+    size: { s: 87, m: 7, l: 98, xl: 56 },
     title: 'Adidas Club Training Jacket',
     price: 81,
-    image,
+    image:
+      'http://localhost:8081/assets/src/assets/images/hood.png?platform=ios&hash=d1623f0f0cd394eedaf9156afc11dfb0',
     brand: 'adidas',
     description: 'Tapered fit jacket designed for athletes on the move.',
     totalRating: 4.4,
@@ -565,7 +625,9 @@ export const products = [
     id: 31,
     title: 'Puma Running Lightweight Jacket',
     price: 97,
-    image,
+    size: { s: 87, m: 7, l: 98, xl: 56 },
+    image:
+      'http://localhost:8081/assets/src/assets/images/hood.png?platform=ios&hash=d1623f0f0cd394eedaf9156afc11dfb0',
     brand: 'puma',
     description: 'Ultra-lightweight protection against the elements.',
     totalRating: 4.8,
@@ -583,7 +645,9 @@ export const products = [
     id: 32,
     title: 'Levis Relaxed Fit Cotton Shirt',
     price: 73,
-    image,
+    size: { s: 87, m: 7, l: 98, xl: 56 },
+    image:
+      'http://localhost:8081/assets/src/assets/images/hood.png?platform=ios&hash=d1623f0f0cd394eedaf9156afc11dfb0',
     brand: 'levis',
     description: 'Easy-going style with a roomier fit for all-day comfort.',
     totalRating: 4.3,
@@ -599,9 +663,11 @@ export const products = [
   },
   {
     id: 33,
+    size: { s: 87, m: 7, l: 98, xl: 56 },
     title: 'Allen Solly Office Slim Shirt',
     price: 88,
-    image,
+    image:
+      'http://localhost:8081/assets/src/assets/images/hood.png?platform=ios&hash=d1623f0f0cd394eedaf9156afc11dfb0',
     brand: 'allen solly',
     description: 'A perfect blend of style and professionalism.',
     totalRating: 4.6,
@@ -617,9 +683,11 @@ export const products = [
   },
   {
     id: 34,
+    size: { s: 87, m: 7, l: 98, xl: 56 },
     title: 'Peter England Executive Shirt',
     price: 91,
-    image,
+    image:
+      'http://localhost:8081/assets/src/assets/images/hood.png?platform=ios&hash=d1623f0f0cd394eedaf9156afc11dfb0',
     brand: 'peter england',
     description: 'A prestigious look for the modern executive.',
     totalRating: 4.7,
@@ -635,9 +703,11 @@ export const products = [
   },
   {
     id: 35,
+    size: { s: 87, m: 7, l: 98, xl: 56 },
     title: 'Snitch Street Style Printed Tee',
     price: 70,
-    image,
+    image:
+      'http://localhost:8081/assets/src/assets/images/hood.png?platform=ios&hash=d1623f0f0cd394eedaf9156afc11dfb0',
     brand: 'snitch',
     description: 'Abstract prints designed for those who lead the trends.',
     totalRating: 4.1,
@@ -655,7 +725,9 @@ export const products = [
     id: 36,
     title: 'Nike Training Flex Hoodie',
     price: 95,
-    image,
+    size: { s: 87, m: 7, l: 98, xl: 56 },
+    image:
+      'http://localhost:8081/assets/src/assets/images/hood.png?platform=ios&hash=d1623f0f0cd394eedaf9156afc11dfb0',
     brand: 'nike',
     description: 'Advanced stretch fabric for gym performance and recovery.',
     totalRating: 4.9,
@@ -669,4 +741,4 @@ export const products = [
       },
     ],
   },
-].map(item => ({ ...item, isWishlist: false }));
+];

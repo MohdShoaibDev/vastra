@@ -5,11 +5,8 @@ import SplashImage from '@assets/images/splash.png';
 import useAppNavigation from '@hooks/useAppNavigation';
 import { ScreenNames } from '@utility/screenNames';
 import styles from '@screens/auth/splash/style';
-import { useSelector } from 'react-redux';
-import { RootState } from '@redux/store';
 
 const Splash = () => {
-  const theme = useSelector((state: RootState) => state.theme);
   const navigation = useAppNavigation();
   const [showBtn, setShowBtn] = useState(false);
 
@@ -27,7 +24,7 @@ const Splash = () => {
   };
 
   return (
-    <View style={{ ...styles.container, backgroundColor: theme.bgColor }}>
+    <View style={styles.container }>
       <FastImage
         source={{
           uri: Image.resolveAssetSource(SplashImage).uri,

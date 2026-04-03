@@ -9,17 +9,17 @@ import Animated, {
 import FastImage from 'react-native-fast-image';
 import { commonColors } from '@utility/appColors';
 import { useSelector } from 'react-redux';
-import { RootState } from '@redux/store';
+import { RootState } from '@redux/store/store';
 
 interface ProductCardProps {
   index?: number;
-  id: number;
+  id: string;
   image: string;
   title: string;
   price: number;
-  onPressWishList: () => void;
+  onPressWishList: (id: string, isWishlist: boolean) => void;
   isWishlist?: boolean;
-  onPressCard?: (id: number) => void;
+  onPressCard?: (id: string) => void;
 }
 
 const AnimatedFeather = Animated.createAnimatedComponent(Feather);
@@ -47,7 +47,7 @@ const ProductCard: React.FC<ProductCardProps> = ({
     scale.value = 1.4;
     scale.value = withSpring(1);
     if (onPressWishList) {
-      onPressWishList();
+      onPressWishList(id, isWishlist);
     }
   };
 

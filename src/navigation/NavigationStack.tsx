@@ -18,7 +18,7 @@ import Notifications from '@screens/notification/Notifications';
 import { useDispatch } from 'react-redux';
 import { storage } from '@utility/helperMethod';
 import { Appearance } from 'react-native';
-import { appThemeHandler } from '@redux/slice';
+import { appThemeHandler } from '@redux/slice/themeSlice';
 import { darkColors, lightColors } from '@utility/appColors';
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
@@ -78,7 +78,7 @@ const NavigationStack = () => {
           {!isAuth ? (
             <>
               <Stack.Screen name={ScreenNames.Login} component={Login} />
-              {/* <Stack.Screen name={ScreenNames.Register} component={Signup} /> */}
+              <Stack.Screen name={ScreenNames.Register} component={Signup} />
             </>
           ) : (
             <>
@@ -86,22 +86,22 @@ const NavigationStack = () => {
                 name={ScreenNames.BottomTab}
                 component={BottomTab}
               />
-              {/* <Stack.Screen
+              <Stack.Screen
                 name={ScreenNames.ProductDetails}
                 component={ProductDetails}
-              /> */}
-              {/* <Stack.Screen name={ScreenNames.Wishlist} component={Wishlist} /> */}
-              {/* <Stack.Screen name={ScreenNames.Cart} component={Cart} /> */}
-              {/* <Stack.Screen name={ScreenNames.Profile} component={Profile} /> */}
-              {/* <Stack.Screen name={ScreenNames.Orders} component={Orders} /> */}
-              {/* <Stack.Screen
+              />
+              <Stack.Screen name={ScreenNames.Wishlist} component={Wishlist} />
+              <Stack.Screen name={ScreenNames.Cart} component={Cart} />
+              <Stack.Screen name={ScreenNames.Profile} component={Profile} />
+              <Stack.Screen name={ScreenNames.Orders} component={Orders} />
+              <Stack.Screen
                 name={ScreenNames.TermsAndCondition}
                 component={TermsAndCondition}
-              /> */}
-              {/* <Stack.Screen
+              />
+              <Stack.Screen
                 name={ScreenNames.Notifications}
                 component={Notifications}
-              /> */}
+              />
             </>
           )}
         </>

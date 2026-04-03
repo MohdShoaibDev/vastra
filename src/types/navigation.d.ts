@@ -6,14 +6,14 @@ export type RootStackParamList = {
   [ScreenNames.Login]: undefined;
   [ScreenNames.Register]: undefined;
   [ScreenNames.Splash]: undefined;
-  [ScreenNames.ProductDetails]: { id: number };
+  [ScreenNames.ProductDetails]: { id: string };
   [ScreenNames.BottomTab]: undefined;
   [ScreenNames.Wishlist]: undefined;
   [ScreenNames.Orders]: undefined;
   [ScreenNames.Profile]: undefined;
   [ScreenNames.Cart]: undefined;
   [ScreenNames.TermsAndCondition]: undefined;
-  [ScreenNames.Notifications]: undefined
+  [ScreenNames.Notifications]: undefined;
 };
 
 export type AppNavigationProp = NativeStackNavigationProp<RootStackParamList>;

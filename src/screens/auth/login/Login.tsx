@@ -11,13 +11,15 @@ import useAppNavigation from '@hooks/useAppNavigation';
 import { ScreenNames } from '@utility/screenNames';
 import Loader from '@components/loader/Loader';
 import { useIsFocused } from '@react-navigation/native';
-import { signInWithEmailAndPassword } from '@react-native-firebase/auth';
+import {
+  signInWithEmailAndPassword,
+} from '@react-native-firebase/auth';
 import styles from '@screens/auth/login/style';
 import auth from 'src/firebase/auth';
 import { showToast } from '@utility/helperMethod';
 import { commonColors } from '@utility/appColors';
 import { useSelector } from 'react-redux';
-import { RootState } from '@redux/store';
+import { RootState } from '@redux/store/store';
 
 type FormData = {
   email: string;
@@ -83,7 +85,10 @@ const Login: React.FC = () => {
   return (
     <>
       <KeyboardAwareScrollView
-        style={{ ...styles.container, backgroundColor: theme.bgColor }}
+        style={{
+          ...styles.container,
+          backgroundColor: theme.bgColor,
+        }}
         scrollEnabled={keyboardHeight > 0}
       >
         <Header
@@ -93,16 +98,24 @@ const Login: React.FC = () => {
           showBack={navigation.canGoBack()}
         />
 
-        <View style={styles.card}>
+        <View style={{ ...styles.card, backgroundColor: theme.card }}>
           <View style={styles.title}>
-            <Text style={styles.welcome}>Welcome</Text>
-            <Text style={styles.welcome}>to</Text>
+            <Text style={{ ...styles.welcome, color: theme.mainTextColor }}>
+              Welcome
+            </Text>
+            <Text style={{ ...styles.welcome, color: theme.mainTextColor }}>
+              to
+            </Text>
             <Text style={styles.vastra}>Vastra</Text>
           </View>
 
-          <Text style={styles.welcome}>Login now!</Text>
+          <Text style={{ ...styles.welcome, color: theme.mainTextColor }}>
+            Login now!
+          </Text>
 
-          <Text style={styles.label}>Email</Text>
+          <Text style={{ ...styles.label, color: theme.mainTextColor }}>
+            Email
+          </Text>
 
           <Controller
             control={control}
@@ -127,7 +140,9 @@ const Login: React.FC = () => {
 
           <View style={{ height: 10 }} />
 
-          <Text style={styles.label}>Password</Text>
+          <Text style={{ ...styles.label, color: theme.mainTextColor }}>
+            Password
+          </Text>
 
           <Controller
             control={control}
@@ -187,7 +202,9 @@ const Login: React.FC = () => {
           />
 
           <View style={styles.signin}>
-            <Text style={styles.text1}>Don't have an account?</Text>
+            <Text style={{ ...styles.text1, color: theme.mainTextColor }}>
+              Don't have an account?
+            </Text>
             <Text onPress={navigateToRegister} style={styles.text2}>
               Register
             </Text>

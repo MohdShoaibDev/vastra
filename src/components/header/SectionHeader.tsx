@@ -1,5 +1,5 @@
 
-import { RootState } from '@redux/store';
+import { RootState } from '@redux/store/store';
 import { commonColors } from '@utility/appColors';
 import React from 'react';
 import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
@@ -18,7 +18,7 @@ const SectionHeader: React.FC<SectionHeaderProps> = ({ title }) => {
       </Text>
       <TouchableOpacity>
         <Text style={{ ...styles.view, color: theme.secondaryTextColor }}>
-          View All
+          {/* View All */}
         </Text>
       </TouchableOpacity>
     </View>
