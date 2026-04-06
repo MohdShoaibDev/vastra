@@ -20,8 +20,9 @@ import {
 } from '@react-native-firebase/firestore';
 import auth from 'src/firebase/auth';
 import { showToast } from '@utility/helperMethod';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '@redux/store/store';
+import { appUserDetailsHandler } from '@redux/slice/userSlice';
 
 type FormData = {
   name: string;
@@ -34,6 +35,7 @@ const Signup: React.FC = () => {
   const { keyboardHeight } = useKeyboardVisibleHook();
   const navigation = useAppNavigation();
   const focused = useIsFocused();
+  const dispatch = useDispatch();
   const theme = useSelector((state: RootState) => state.theme);
 
   const [secure, setSecure] = useState(true);
@@ -58,15 +60,23 @@ const Signup: React.FC = () => {
       setLoader(true);
       const user = await createUserWithEmailAndPassword(
         auth,
-        data.email,
+        data.email.toLowerCase(),
         data.password,
       );
       const db = getFirestore();
       await setDoc(doc(db, 'users', user.user.uid), {
         name: data.name,
         email: data.email.toLowerCase(),
+        wallet: 0,
         createdAt: serverTimestamp(),
       });
+      dispatch(
+        appUserDetailsHandler({
+          email: data.email.toLowerCase(),
+          name: data.name,
+          wallet: 0,
+        }),
+      );
       await Promise.all([
         setDoc(doc(db, 'users', user.user.uid, 'cart'), {
           createdAt: serverTimestamp(),
@@ -75,6 +85,12 @@ const Signup: React.FC = () => {
           createdAt: serverTimestamp(),
         }),
         setDoc(doc(db, 'users', user.user.uid, 'orders'), {
+          createdAt: serverTimestamp(),
+        }),
+        setDoc(doc(db, 'users', user.user.uid, 'cards'), {
+          createdAt: serverTimestamp(),
+        }),
+        setDoc(doc(db, 'users', user.user.uid, 'addresses'), {
           createdAt: serverTimestamp(),
         }),
       ]);

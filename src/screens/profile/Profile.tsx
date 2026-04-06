@@ -16,13 +16,17 @@ import { useStatusBarHeight } from '@hooks/useStatusBarHeight';
 
 const settingsData = [
   { id: '1', title: 'Orders', icon: 'bag-outline' },
-  { id: '5', title: 'Notifications', icon: 'notifications-outline' },
-  { id: '6', title: 'Theme', icon: 'sunny-outline', rightText: 'Light' },
+  { id: '2', title: 'Notifications', icon: 'notifications-outline' },
+  { id: '3', title: 'Theme', icon: 'sunny-outline', rightText: 'Light' },
+  { id: '4', title: 'Addresses', icon: 'location-outline' },
+  { id: '5', title: 'Payments', icon: 'card-outline' },
   { id: '7', title: 'Terms & Conditions', icon: 'document-text-outline' },
   { id: '10', title: 'Logout', icon: 'log-out-outline' },
 ];
 
-const ProfileHeader = memo(({ theme }: RootState) => {
+const ProfileHeader = memo(() => {
+  const theme = useSelector((state: RootState) => state.theme);
+  const user = useSelector((state: RootState) => state.user);
   const { statusBarHeight } = useStatusBarHeight();
   return (
     <>
@@ -54,7 +58,7 @@ const ProfileHeader = memo(({ theme }: RootState) => {
         </View>
 
         <Text style={{ ...styles.name, color: theme.mainTextColor }}>
-          Mohd Shoaib
+          {user.name}
         </Text>
       </View>
 
@@ -108,6 +112,7 @@ const Profile = () => {
   };
 
   const tabHandler = (id: string) => {
+    console.log(id)
     switch (id) {
       case 'Orders':
         navigationHandler(ScreenNames.Orders);
@@ -120,6 +125,12 @@ const Profile = () => {
         break;
       case 'Terms & Conditions':
         navigationHandler(ScreenNames.TermsAndCondition);
+        break;
+      case 'Addresses':
+        navigationHandler(ScreenNames.Addresses);
+        break;
+      case 'Payments':
+        navigationHandler(ScreenNames.ManagePayment);
         break;
       default:
         showLogoutAlert();
@@ -170,7 +181,7 @@ const Profile = () => {
           data={settingsData}
           keyExtractor={item => item.id}
           renderItem={renderItem}
-          ListHeaderComponent={<ProfileHeader theme={theme} />}
+          ListHeaderComponent={<ProfileHeader />}
           ItemSeparatorComponent={() => <View style={styles.separator} />}
           showsVerticalScrollIndicator={false}
           contentContainerStyle={{ paddingBottom: 30 }}

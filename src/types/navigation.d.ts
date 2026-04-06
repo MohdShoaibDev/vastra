@@ -14,6 +14,10 @@ export type RootStackParamList = {
   [ScreenNames.Cart]: undefined;
   [ScreenNames.TermsAndCondition]: undefined;
   [ScreenNames.Notifications]: undefined;
+  [ScreenNames.Payment]: { amount: number };
+  [ScreenNames.AddCard]: undefined;
+  [ScreenNames.Addresses]: undefined;
+  [ScreenNames.ManagePayment]: undefined;
 };
 
 export type AppNavigationProp = NativeStackNavigationProp<RootStackParamList>;

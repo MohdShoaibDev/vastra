@@ -1,10 +1,4 @@
-import React, {
-  useCallback,
-  useEffect,
-  useMemo,
-  useRef,
-  useState,
-} from 'react';
+import React, { useCallback } from 'react';
 import { Text, View } from 'react-native';
 import { FlashList } from '@shopify/flash-list';
 import styles from '@screens/wishlist/style';
@@ -15,84 +9,31 @@ import { ScreenNames } from '@utility/screenNames';
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '@redux/store/store';
 import auth from 'src/firebase/auth';
-import {
-  getFirestore,
-  doc,
-  collection,
-  getDocs,
-  query,
-  where,
-  documentId,
-  deleteDoc,
-} from '@react-native-firebase/firestore';
+import { getFirestore, doc, deleteDoc } from '@react-native-firebase/firestore';
 import { showToast } from '@utility/helperMethod';
-import Loader from '@components/loader/Loader';
 import { Product } from 'src/types/product';
-import { useIsFocused } from '@react-navigation/native';
-import { appReloadHandler } from '@redux/slice/reloadSlice';
+import { appWishlistIdsHandler } from '@redux/slice/wishlistIdsSlice';
+import { appWishlistDataHandler } from '@redux/slice/wishlistDataSlice';
 
 const Wishlist = () => {
   const theme = useSelector((state: RootState) => state.theme);
   const { statusBarHeight } = useStatusBarHeight();
   const navigation = useAppNavigation();
-  const focused = useIsFocused();
   const dispatch = useDispatch();
-  const reload = useSelector((state: RootState) => state.reload);
-  const [wishlistData, setWishlistData] = useState<Product[]>([]);
-  const [loading, setLoading] = useState(true);
-  const wishlistObserverRef = useRef<boolean>(false);
-
-  useEffect(() => {
-    setLoading(true);
-    fetchWishlist();
-  }, []);
-
-  useEffect(() => {
-    if (!focused && wishlistObserverRef.current) {
-      dispatch(appReloadHandler({ home: !reload.home }));
-    }
-  }, [focused]);
-
-  useEffect(() => {
-    fetchWishlist();
-  }, [reload.wishlist]);
-
-  const fetchWishlist = async () => {
-    try {
-      if (!auth.currentUser?.uid) return;
-      const wishlistSnapshot = await getDocs(
-        collection(getFirestore(), 'users', auth.currentUser.uid, 'wishlist'),
-      );
-      const wishlistProductIds = wishlistSnapshot.docs.map(
-        (doc: any) => doc.id,
-      );
-      const qry = query(
-        collection(getFirestore(), 'products'),
-        where(documentId(), 'in', wishlistProductIds),
-      );
-      const snapshot = await getDocs(qry);
-      const docData = snapshot.docs.map((doc: any) => {
-        return {
-          ...doc.data(),
-          id: doc.id,
-        };
-      });
-      setWishlistData(docData);
-      wishlistObserverRef.current = true;
-    } catch (err: any) {
-      console.log('error in getting wishlist products', err?.message);
-    } finally {
-      setLoading(false);
-    }
-  };
-
+  const wishlistProductIds: { [key: string]: boolean } = useSelector(
+    (state: RootState) => state.wishlistIds,
+  );
+  const wishlistProducts = useSelector(
+    (state: RootState) => state.wishlistData,
+  );
   const navigateToProductDetails = useCallback((id: string) => {
     navigation.navigate(ScreenNames.ProductDetails, { id });
   }, []);
 
   const handleWishlist = useCallback(
-    async (id: string) => {
-      const oldData = { ...wishlistData };
+    async (_: any, item: Product) => {
+      const oldData = { ...wishlistProducts };
+      const oldWishlistProductIds = { ...wishlistProductIds };
       try {
         if (!auth.currentUser?.uid) {
           showToast('error', 'Something went wrong');
@@ -103,40 +44,39 @@ const Wishlist = () => {
           'users',
           auth.currentUser.uid,
           'wishlist',
-          id,
+          item.id,
         );
-        const filterData = wishlistData.filter(
-          (product: Product) => product.id != id,
+        const wishlistProductsFilter = wishlistProducts.filter(
+          (product: Product) => product.id != item.id,
         );
-        setWishlistData(filterData);
+        dispatch(appWishlistDataHandler(wishlistProductsFilter));
+        const wishlistProductIdsFilter = { ...wishlistProductIds };
+        delete wishlistProductIdsFilter[item.id];
+        dispatch(appWishlistIdsHandler(wishlistProductIdsFilter));
         await deleteDoc(wishlistRef);
       } catch (err: any) {
-        setWishlistData(oldData);
+        dispatch(appWishlistDataHandler(oldData));
+        dispatch(appWishlistIdsHandler(oldWishlistProductIds));
         showToast('error', 'Something went wrong');
         console.log('error in wishlisting ', err?.message);
       }
     },
-    [wishlistData],
+    [wishlistProductIds],
   );
 
   const renderItem = useCallback(
     ({ item, index }: { item: any; index: number }) => {
       return (
         <ProductCard
-          index={index}
-          id={item.id}
-          title={item.title}
-          price={item.price}
-          image={item.image}
+          index={item.id}
+          item={item}
           isWishlist={true}
-          onPressWishList={() => {
-            handleWishlist(item.id);
-          }}
+          onPressWishList={handleWishlist}
           onPressCard={navigateToProductDetails}
         />
       );
     },
-    [handleWishlist],
+    [wishlistProducts],
   );
 
   const Header = () => (
@@ -150,9 +90,9 @@ const Wishlist = () => {
   return (
     <>
       <Header />
-      {wishlistData.length > 0 && (
+      {wishlistProducts.length > 0 && (
         <FlashList
-          data={wishlistData}
+          data={wishlistProducts}
           renderItem={renderItem}
           keyExtractor={item => item.id.toString()}
           numColumns={2}
@@ -163,12 +103,12 @@ const Wishlist = () => {
           showsVerticalScrollIndicator={false}
         />
       )}
-      {!loading && wishlistData.length === 0 && (
+
+      {wishlistProducts.length === 0 && (
         <Text style={{ ...styles.noDataFound, color: theme.mainTextColor }}>
           Wishlist is empty
         </Text>
       )}
-      <Loader visible={loading} />
     </>
   );
 };

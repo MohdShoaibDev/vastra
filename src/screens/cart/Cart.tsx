@@ -18,16 +18,20 @@ import { Product } from 'src/types/product';
 import { showToast } from '@utility/helperMethod';
 import { useStatusBarHeight } from '@hooks/useStatusBarHeight';
 import { useIsFocused } from '@react-navigation/native';
+import useAppNavigation from '@hooks/useAppNavigation';
+import { ScreenNames } from '@utility/screenNames';
+import IconButton from '@components/buttons/IconButton';
 
 const Cart = () => {
   const theme = useSelector((state: RootState) => state.theme);
   const focused = useIsFocused();
+  const navigation = useAppNavigation();
   const { statusBarHeight } = useStatusBarHeight();
   const [items, setItems] = useState<any>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    getProductFromCart();
+    focused && getProductFromCart();
   }, [focused]);
 
   const getProductFromCart = async () => {
@@ -127,6 +131,10 @@ const Cart = () => {
     0,
   );
 
+  const navigateToPaymentScreen = () => {
+    navigation.navigate(ScreenNames.Payment, { amount: total });
+  };
+
   return (
     <View style={{ ...styles.container, backgroundColor: theme.bgColor }}>
       <ScrollView
@@ -207,9 +215,11 @@ const Cart = () => {
               </Text>
             </View>
 
-            <TouchableOpacity style={styles.nextBtn}>
-              <Text style={styles.nextText}>Next</Text>
-            </TouchableOpacity>
+            <IconButton
+              text="Place your order"
+              style={styles.nextBtn}
+              onPress={navigateToPaymentScreen}
+            />
           </>
         )}
         {!loading && items.length === 0 && (

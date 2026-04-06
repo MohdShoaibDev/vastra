@@ -30,42 +30,32 @@ import {
 import { showToast } from '@utility/helperMethod';
 import Loader from '@components/loader/Loader';
 import { Product } from 'src/types/product';
-import { useIsFocused } from '@react-navigation/native';
-import { appReloadHandler } from '@redux/slice/reloadSlice';
-
-type WishlistType = {
-  [key: string]: boolean;
-};
+import { appWishlistIdsHandler } from '@redux/slice/wishlistIdsSlice';
+import { appWishlistDataHandler } from '@redux/slice/wishlistDataSlice';
 
 const Home = () => {
   const theme = useSelector((state: RootState) => state.theme);
   const { statusBarHeight } = useStatusBarHeight();
   const navigation = useAppNavigation();
-  const focused = useIsFocused();
-  const wishlistObserverRef = useRef<any>({});
   const dispatch = useDispatch();
-  const reload = useSelector((state: RootState) => state.reload);
+  const wishlistIds = useSelector((state: RootState) => state.wishlistIds);
+  const wishlistData = useSelector((state: RootState) => state.wishlistData);
+  const user = useSelector((state: RootState) => state.user);
   const [productsData, setProductsData] = useState<Product[]>([]);
-  const [wishlistData, setWishlistData] = useState<WishlistType>({});
   const [loading, setLoading] = useState(true);
+  const wishlistIdsRef = useRef({});
+  const wishlistDataRef = useRef<Product[]>([]);
 
   useEffect(() => {
-    Promise.all([fetchProducts(), fetchWishlistData()]).finally(() => {
+    wishlistDataRef.current = wishlistData;
+    wishlistIdsRef.current = wishlistIds;
+  }, [wishlistData, wishlistIds]);
+
+  useEffect(() => {
+    fetchProducts().finally(() => {
       setLoading(false);
     });
   }, []);
-
-  useEffect(() => {
-    if (!focused && Object.keys(wishlistObserverRef.current).length > 0) {
-      dispatch(appReloadHandler({ wishlist: !reload.wishlist }));
-    }
-  }, [focused]);
-
-  useEffect(() => {
-    Promise.all([fetchProducts(), fetchWishlistData()]).finally(() => {
-      setLoading(false);
-    });
-  }, [reload.home]);
 
   const fetchProducts = async () => {
     try {
@@ -82,30 +72,12 @@ const Home = () => {
     }
   };
 
-  const fetchWishlistData = async () => {
-    try {
-      if (!auth.currentUser?.uid) return;
-      const snapshot = await getDocs(
-        collection(getFirestore(), 'users', auth.currentUser.uid, 'wishlist'),
-      );
-      const data = {};
-      if (snapshot.docs?.length === 0) return;
-      for (let i = 0; i < snapshot.docs.length; i++) {
-        data[snapshot.docs[i].id] = true;
-      }
-      setWishlistData(data);
-    } catch (err: any) {
-      console.log('error in getting products', err?.message);
-    }
-  };
-
   const navigateToProductDetails = useCallback((id: string) => {
     navigation.navigate(ScreenNames.ProductDetails, { id });
   }, []);
 
   const handleWishlist = useCallback(
-    async (id: string, isWishlist: boolean) => {
-      const oldData = { ...wishlistData };
+    async (isWishlist: boolean, item: Product) => {
       try {
         if (!auth.currentUser?.uid) {
           showToast('error', 'Something went wrong');
@@ -116,52 +88,77 @@ const Home = () => {
           'users',
           auth.currentUser.uid,
           'wishlist',
-          id,
+          item.id,
         );
         if (isWishlist) {
-          const data = { ...wishlistData };
-          delete data[id];
-          setWishlistData(data);
+          const data: any = { ...wishlistIds };
+          const appWishlistData = wishlistData.filter(
+            (product: Product) => product.id != item.id,
+          );
+          // if (Math.random() < 0.5) {
+          //   console.log(item.price);
+          //   await new Promise((_, reject) =>
+          //     setTimeout(() => {
+          //       reject('Intentional error');
+          //     }, 5000),
+          //   );
+          // }
+          dispatch(appWishlistDataHandler(appWishlistData));
+          delete data[item.id];
+          dispatch(appWishlistIdsHandler(data));
           await deleteDoc(wishlistRef);
         } else {
-          setWishlistData((preData: any) => ({
-            ...preData,
-            [id]: true,
-          }));
+          dispatch(appWishlistDataHandler(item));
+          dispatch(appWishlistIdsHandler({ ...wishlistIds, [item.id]: true }));
+          // if (Math.random() < 0.5) {
+          //   console.log(item.price);
+          //   await new Promise((_, reject) =>
+          //     setTimeout(() => {
+          //       reject('Intentional error');
+          //     }, 5000),
+          //   );
+          // }
           await setDoc(wishlistRef, {
             createdAt: serverTimestamp(),
           });
         }
-        if (wishlistObserverRef.current[id]) {
-          delete wishlistObserverRef.current[id];
-        } else {
-          wishlistObserverRef.current[id] = id;
-        }
       } catch (err: any) {
-        setWishlistData(oldData);
+        if (isWishlist) {
+          dispatch(appWishlistDataHandler(item));
+          dispatch(
+            appWishlistIdsHandler({
+              ...wishlistDataRef.current,
+              [item.id]: true,
+            }),
+          );
+        } else {
+          const data: any = { ...wishlistIdsRef.current };
+          const appWishlistData = wishlistDataRef.current.filter(
+            (product: Product) => product.id != item.id,
+          );
+          dispatch(appWishlistDataHandler(appWishlistData));
+          delete data[item.id];
+          dispatch(appWishlistIdsHandler(data));
+        }
         showToast('error', 'Something went wrong');
-        console.log('error in wishlisting ', err?.message);
       }
     },
-    [wishlistData],
+    [wishlistIds, wishlistData],
   );
 
   const renderItem = useCallback(
     ({ item, index }: { item: any; index: number }) => {
       return (
         <ProductCard
-          index={index}
-          id={item.id}
-          title={item.title}
-          price={item.price}
-          image={item.image}
-          isWishlist={wishlistData[item.id]}
+          item={item}
+          index={item.id}
+          isWishlist={wishlistIds[item.id]}
           onPressWishList={handleWishlist}
           onPressCard={navigateToProductDetails}
         />
       );
     },
-    [wishlistData],
+    [wishlistIds],
   );
 
   const brands = useMemo(() => {
@@ -186,7 +183,7 @@ const Home = () => {
     <View>
       <Text style={{ ...styles.hello, color: theme.mainTextColor }}>Hello</Text>
       <Text style={{ ...styles.subtitle, color: theme.secondaryTextColor }}>
-        Welcome to Laza.
+        {`Welcome ${user.name}`}
       </Text>
 
       <SearchBar

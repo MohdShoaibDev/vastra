@@ -10,14 +10,12 @@ import FastImage from 'react-native-fast-image';
 import { commonColors } from '@utility/appColors';
 import { useSelector } from 'react-redux';
 import { RootState } from '@redux/store/store';
+import { Product } from 'src/types/product';
 
 interface ProductCardProps {
-  index?: number;
-  id: string;
-  image: string;
-  title: string;
-  price: number;
-  onPressWishList: (id: string, isWishlist: boolean) => void;
+  index: number;
+  item: Product;
+  onPressWishList: (isWishlist: boolean, item: Product) => void;
   isWishlist?: boolean;
   onPressCard?: (id: string) => void;
 }
@@ -25,11 +23,8 @@ interface ProductCardProps {
 const AnimatedFeather = Animated.createAnimatedComponent(Feather);
 
 const ProductCard: React.FC<ProductCardProps> = ({
-  index = 0,
-  id,
-  image,
-  title,
-  price,
+  index,
+  item,
   onPressWishList = () => {},
   isWishlist = false,
   onPressCard = () => {},
@@ -47,13 +42,13 @@ const ProductCard: React.FC<ProductCardProps> = ({
     scale.value = 1.4;
     scale.value = withSpring(1);
     if (onPressWishList) {
-      onPressWishList(id, isWishlist);
+      onPressWishList(isWishlist, item);
     }
   };
 
   const onPressCardHandler = () => {
     if (onPressCard) {
-      onPressCard(id);
+      onPressCard(item.id);
     }
   };
 
@@ -72,7 +67,7 @@ const ProductCard: React.FC<ProductCardProps> = ({
         onPress={onPressCardHandler}
       >
         <FastImage
-          source={{ uri: image, priority: FastImage.priority.high }}
+          source={{ uri: item.image, priority: FastImage.priority.high }}
           resizeMode={FastImage.resizeMode.contain}
           style={styles.image}
         />
@@ -94,11 +89,11 @@ const ProductCard: React.FC<ProductCardProps> = ({
           style={{ ...styles.title, color: theme.secondaryTextColor }}
           numberOfLines={2}
         >
-          {title}
+          {item.title}
         </Text>
 
         <Text style={{ ...styles.price, color: theme.mainTextColor }}>
-          ${price}
+          ${item.price}
         </Text>
       </TouchableOpacity>
     </View>

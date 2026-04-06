@@ -11,15 +11,15 @@ import useAppNavigation from '@hooks/useAppNavigation';
 import { ScreenNames } from '@utility/screenNames';
 import Loader from '@components/loader/Loader';
 import { useIsFocused } from '@react-navigation/native';
-import {
-  signInWithEmailAndPassword,
-} from '@react-native-firebase/auth';
+import { signInWithEmailAndPassword } from '@react-native-firebase/auth';
 import styles from '@screens/auth/login/style';
 import auth from 'src/firebase/auth';
 import { showToast } from '@utility/helperMethod';
 import { commonColors } from '@utility/appColors';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '@redux/store/store';
+import { doc, getFirestore, getDoc } from '@react-native-firebase/firestore';
+import { appUserDetailsHandler } from '@redux/slice/userSlice';
 
 type FormData = {
   email: string;
@@ -31,6 +31,7 @@ const Login: React.FC = () => {
   const { keyboardHeight } = useKeyboardVisibleHook();
   const navigation = useAppNavigation();
   const focused = useIsFocused();
+  const dispatch = useDispatch();
 
   const [secure, setSecure] = useState(true);
   const [remember, setRemember] = useState(false);
@@ -50,10 +51,22 @@ const Login: React.FC = () => {
   const onValid = async (data: FormData) => {
     try {
       setLoader(true);
-      await signInWithEmailAndPassword(
+      const userCred = await signInWithEmailAndPassword(
         auth,
         data.email.toLowerCase(),
         data.password,
+      );
+      if (!userCred.user.uid) return;
+      const userRef: any = doc(getFirestore(), 'users', userCred.user.uid);
+      const user = await getDoc(userRef);
+      const data = user.data();
+      if (!data) return;
+      dispatch(
+        appUserDetailsHandler({
+          email: data.email,
+          name: data.name,
+          wallet: data.wallet,
+        }),
       );
       showToast('success', 'Login Successfully');
     } catch (err: any) {

@@ -1,0 +1,161 @@
+import React, { useState } from 'react';
+import { View } from 'react-native';
+import styles from '@screens/payment/addCard/style';
+import InputField from '@components/textfield/InputField';
+import Header from '@components/header/Header';
+import { useSelector } from 'react-redux';
+import { RootState } from '@redux/store/store';
+import DebitCard from '@components/payment/DebitCard';
+import IconButton from '@components/buttons/IconButton';
+import { showToast } from '@utility/helperMethod';
+import {
+  addDoc,
+  collection,
+  getDocs,
+  getFirestore,
+} from '@react-native-firebase/firestore';
+import auth from 'src/firebase/auth';
+import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
+import Loader from '@components/loader/Loader';
+
+const AddCard = () => {
+  const theme = useSelector((state: RootState) => state.theme);
+  const [name, setName] = useState('');
+  const [number, setNumber] = useState('');
+  const [expiry, setExpiry] = useState('');
+  const [cvv, setCvv] = useState('');
+  const [loading, setLoading] = useState(false);
+
+  const handleAddCard = async () => {
+    const currentDate = new Date();
+    const currentMonth = currentDate.getMonth() + 1;
+    const currentYear = currentDate.getFullYear();
+
+    const expMonth = Number(expiry.slice(0, 2));
+    const expYear = 2000 + Number(expiry.slice(3));
+
+    const isValid =
+      name.length >= 3 &&
+      cvv.length === 3 &&
+      number.length === 19 &&
+      expiry.length === 5;
+
+    if (!isValid) {
+      showToast('error', 'Invalid input format');
+      return;
+    }
+
+    const isExpired =
+      expYear < currentYear ||
+      (expYear === currentYear && expMonth < currentMonth);
+
+    if (isExpired) {
+      showToast('error', 'Card is expired');
+      return;
+    }
+    try {
+      setLoading(true);
+      if (!auth.currentUser?.uid) return;
+      const cardRef = collection(
+        getFirestore(),
+        'users',
+        auth.currentUser.uid,
+        'cards',
+      );
+      await addDoc(cardRef, {
+        number,
+        name,
+        cvv,
+        expiry,
+      });
+      showToast('success', 'Card added successfully');
+      setName('');
+      setNumber('');
+      setExpiry('');
+      setCvv('');
+    } catch (err: any) {
+      showToast('error', 'Something went wrong')
+      console.log('getting error in adding card', err?.message);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleCardNumber = (text: string) => {
+    const cardNumber = text
+      .replace(/\D/g, '')
+      .replace(/(.{4})/g, '$1-')
+      .replace(/-$/, '');
+    setNumber(cardNumber);
+  };
+
+  const handleCardExpiry = (text: string) => {
+    const cleaned = text.replace(/\D/g, '').slice(0, 4);
+    let formatted = cleaned;
+    if (cleaned.length > 2) {
+      formatted = `${cleaned.slice(0, 2)}/${cleaned.slice(2)}`;
+    }
+    setExpiry(formatted);
+  };
+
+  return (
+    <>
+      <View style={{ ...styles.container, backgroundColor: theme.bgColor }}>
+        <Header title="Add Card" showNotification={false} />
+
+        <KeyboardAwareScrollView bounces={false}>
+          <View style={styles.cardView}>
+            <DebitCard name={name} number={number} expiry={expiry} />
+          </View>
+
+          <View style={styles.inputsContainer}>
+            <InputField
+              placeholder="Card Holder Name"
+              value={name}
+              onChangeText={setName}
+              maxLength={20}
+            />
+
+            <InputField
+              placeholder="Card Number"
+              value={number}
+              onChangeText={handleCardNumber}
+              keyboardType="numeric"
+              maxLength={19}
+            />
+
+            <View style={styles.row}>
+              <View style={[styles.inputHalf, styles.leftGap]}>
+                <InputField
+                  placeholder="Expiry (MM/YY)"
+                  value={expiry}
+                  onChangeText={handleCardExpiry}
+                  maxLength={5}
+                />
+              </View>
+
+              <View style={[styles.inputHalf, styles.rightGap]}>
+                <InputField
+                  placeholder="CVV"
+                  value={cvv}
+                  onChangeText={setCvv}
+                  keyboardType="numeric"
+                  maxLength={3}
+                />
+              </View>
+            </View>
+          </View>
+
+          <IconButton
+            text="Add Card"
+            style={styles.button}
+            onPress={handleAddCard}
+          />
+        </KeyboardAwareScrollView>
+      </View>
+      <Loader visible={loading} />
+    </>
+  );
+};
+
+export default AddCard;

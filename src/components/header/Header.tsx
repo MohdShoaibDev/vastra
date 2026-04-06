@@ -69,7 +69,6 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     backgroundColor: commonColors.transparent,
-    paddingHorizontal: 10,
   },
 
   left: {

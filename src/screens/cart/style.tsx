@@ -52,8 +52,6 @@ export const styles = StyleSheet.create({
   nextBtn: {
     marginTop: 20,
     backgroundColor: commonColors.primaryTextColor,
-    borderRadius: 30,
-    paddingVertical: 16,
     alignItems: 'center',
   },
   nextText: {

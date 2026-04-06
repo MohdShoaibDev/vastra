@@ -5,6 +5,7 @@ type userType = {
   email: string;
   profileImage: string;
   phoneNumber: string;
+  wallet: number;
 };
 
 const initialState: userType = {
@@ -12,13 +13,14 @@ const initialState: userType = {
   email: '',
   profileImage: '',
   phoneNumber: '',
+  wallet: 0,
 };
 
 const userSlice = createSlice({
   name: 'user',
   initialState,
   reducers: {
-    userDetailsHandler: (state: userType, action: PayloadAction<{}>) => {
+    appUserDetailsHandler: (state: userType, action: PayloadAction<{}>) => {
       return {
         ...state,
         ...action.payload,
@@ -27,5 +29,5 @@ const userSlice = createSlice({
   },
 });
 
-export const { userDetailsHandler } = userSlice.actions;
+export const { appUserDetailsHandler } = userSlice.actions;
 export default userSlice.reducer;

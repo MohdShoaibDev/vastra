@@ -9,7 +9,7 @@ import {
   ViewStyle,
 } from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome';
-import {commonColors} from '../../utility/appColors';
+import { commonColors } from '../../utility/appColors';
 
 interface IconButtonProps {
   size?: number;
@@ -41,7 +41,7 @@ const IconButton: React.FC<IconButtonProps> = ({
           name={iconName}
           size={size || 25}
           color={color || commonColors.primaryTextColor}
-          style={{marginRight: 10}}
+          style={{ marginRight: 10 }}
         />
       )}
 
@@ -57,7 +57,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
-    backgroundColor: '#FFFFFF',
+    backgroundColor: commonColors.white,
     borderRadius: 15,
     height: 48,
     paddingHorizontal: 20,
@@ -72,7 +72,7 @@ const styles = StyleSheet.create({
 
   text: {
     fontSize: 18,
-    color: '#3C4043',
+    color: commonColors.white,
     fontWeight: '500',
   },
 });

@@ -10,5 +10,9 @@ export const ScreenNames = {
   Orders: 'Orders',
   Cart: 'Cart',
   TermsAndCondition: 'TermsAndCondition',
-  Notifications: 'Notifications'
+  Notifications: 'Notifications',
+  Payment: 'Payment',
+  AddCard: 'AddCard',
+  Addresses: 'Addresses',
+  ManagePayment: 'ManagePayment'
 };
