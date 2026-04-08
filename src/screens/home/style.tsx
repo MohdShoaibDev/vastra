@@ -2,6 +2,12 @@ import { commonColors } from '@utility/appColors';
 import { StyleSheet } from 'react-native';
 
 export default StyleSheet.create({
+  topSectionContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: 15,
+  },
   hello: {
     fontSize: 28,
     fontWeight: '700',
@@ -9,7 +15,6 @@ export default StyleSheet.create({
 
   subtitle: {
     color: commonColors.gray,
-    marginBottom: 10,
     fontSize: 16,
   },
 });

@@ -1,18 +1,15 @@
 import Header from '@components/header/Header';
 import React from 'react';
-import { View, Text, StyleSheet } from 'react-native';
+import { View, Text } from 'react-native';
+import styles from '@screens/addresses/style';
 
 const Addresses = () => {
   return (
     <View style={styles.container}>
-      <Header title="Terms & Conditions" />
+      <Header title="Addresses" style={styles.header} />
       <Text>Addresses</Text>
     </View>
   );
 };
-
-const styles = StyleSheet.create({
-  container: {},
-});
 
 export default Addresses;

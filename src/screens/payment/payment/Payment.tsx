@@ -1,93 +1,45 @@
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useRef, useState } from 'react';
 import { View, Text, ScrollView, TouchableOpacity } from 'react-native';
 import PaymentOption from '@components/payment/PaymentOption';
 import styles from './styles';
 import Header from '@components/header/Header';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '@redux/store/store';
 import IconButton from '@components/buttons/IconButton';
-import { useIsFocused, useRoute } from '@react-navigation/native';
-import {
-  collection,
-  getDocs,
-  getFirestore,
-} from '@react-native-firebase/firestore';
-import auth from 'src/firebase/auth';
-import Loader from '@components/loader/Loader';
+import { useRoute } from '@react-navigation/native';
 import useAppNavigation from '@hooks/useAppNavigation';
 import { ScreenNames } from '@utility/screenNames';
 import DebitCard from '@components/payment/DebitCard';
 import { commonColors } from '@utility/appColors';
-
-type Card = {
-  id?: string;
-  number: string;
-  name: string;
-  expiry: string;
-  cvv: string;
-};
+import { showToast } from '@utility/helperMethod';
+import {
+  addDoc,
+  collection,
+  deleteDoc,
+  doc,
+  getDocs,
+  getFirestore,
+  serverTimestamp,
+  updateDoc,
+} from '@react-native-firebase/firestore';
+import auth from 'src/firebase/auth';
+import CVVModal from '@components/modal/CVVModal';
+import Loader from '@components/loader/Loader';
+import { appUserDetailsHandler } from '@redux/slice/userSlice';
+import { Product } from 'src/types/product';
 
 const Payment = () => {
   const theme = useSelector((state: RootState) => state.theme);
+  const cards = useSelector((state: RootState) => state.cards);
+  const user = useSelector((state: RootState) => state.user);
   const [selected, setSelected] = useState<'card' | 'wallet'>('card');
-  const focused = useIsFocused();
   const navigation = useAppNavigation();
   const param: any = useRoute().params;
-  const processingRef = useRef(false);
-  const [loading, setLoading] = useState(false);
-  const [cards, setCards] = useState<Card[]>([]);
+  const dispatch = useDispatch();
   const [selectedCardId, setSelectedCardId] = useState('');
-
-  useEffect(() => {
-    if (focused) {
-      getCardList();
-    }
-  }, [focused]);
-
-  const getCardList = async () => {
-    try {
-      setLoading(true);
-      if (!auth.currentUser?.uid) return;
-      const cardRef = collection(
-        getFirestore(),
-        'users',
-        auth.currentUser.uid,
-        'cards',
-      );
-      const snapshot = await getDocs(cardRef);
-      setCards(
-        snapshot?.docs?.map((card: any) => ({
-          id: card.id,
-          number: card?.data().number,
-          name: card?.data().name,
-          expiry: card?.data().expiry,
-          cvv: card?.data().cvv,
-        })),
-      );
-    } catch (err: any) {
-      console.log('getting error in payment screen', err?.message);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const handlePayment = async () => {
-    if (processingRef.current) return;
-
-    processingRef.current = true;
-
-    try {
-      console.log('Selected Method:', selected);
-
-      await new Promise(resolve => setTimeout(resolve, 1500));
-
-      console.log('Payment Success');
-    } catch (err) {
-      console.log('Payment Failed');
-    } finally {
-      processingRef.current = false;
-    }
-  };
+  const [showModal, setShowModal] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const orderIdRef = useRef(null);
 
   const handleAddCard = () => {
     navigation.navigate(ScreenNames.AddCard);
@@ -106,6 +58,128 @@ const Payment = () => {
     setSelectedCardId(id);
   };
 
+  const updateInventory = async (cartItems: Product[]) => {
+    console.log(cartItems);
+    try {
+    } catch (err: any) {
+      console.log('getting error in updating inventory', err?.message);
+    }
+  };
+
+  const makePayment = async () => {
+    try {
+      setShowModal(false);
+      setLoading(true);
+      const paymentRef = collection(getFirestore(), 'payments');
+      const paymentSnapshot = await addDoc(paymentRef, {
+        userId: auth.currentUser!.uid,
+        orderId: orderIdRef.current,
+        amount: param.amount,
+        method: selected,
+        status: 'success',
+        createdAt: serverTimestamp,
+      });
+      if (!orderIdRef.current) return;
+      await updateDoc(doc(getFirestore(), 'orders', orderIdRef.current), {
+        paymentId: paymentSnapshot.id,
+        status: 'success',
+      });
+      const snapshot = await getDocs(
+        collection(getFirestore(), 'users', auth.currentUser!.uid, 'cart'),
+      );
+      await Promise.all(
+        snapshot.docs.map((docItem: any) => deleteDoc(docItem.ref)),
+      );
+      if (selected === 'wallet') {
+        await updateDoc(doc(getFirestore(), 'users', auth.currentUser!.uid), {
+          wallet: user.wallet - param.amount,
+        });
+      }
+      await updateInventory(snapshot.docs);
+      dispatch(appUserDetailsHandler({ wallet: user.wallet - param.amount }));
+      navigation.reset({
+        index: 0,
+        routes: [{ name: ScreenNames.BottomTab }],
+      });
+    } catch (err: any) {
+      console.log('getting error in makePayment', err?.message);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const createOrder = async () => {
+    try {
+      const uid = auth.currentUser?.uid;
+      if (!uid) return;
+      setLoading(true);
+      const snapshot = await getDocs(
+        collection(getFirestore(), 'users', uid, 'cart'),
+      );
+      let items = [];
+      if (snapshot?.docs.length > 0) {
+        items = snapshot?.docs?.map((doc: any) => ({
+          description: doc.data().description,
+          image: doc.data().image,
+          name: doc.data().name,
+          price: doc.data().price,
+          quantity: doc.data().quantity,
+          size: doc.data().size,
+          id: doc.id,
+        }));
+      }
+      const orderRef = collection(getFirestore(), 'orders');
+      const orderSnapshot = await addDoc(orderRef, {
+        userId: uid,
+        items,
+        totalAmount: param.amount,
+        status: 'pending',
+        createdAt: serverTimestamp(),
+      });
+      orderIdRef.current = orderSnapshot.id;
+      if (selected === 'card') {
+        setLoading(false);
+        setShowModal(true);
+      } else {
+        await makePayment();
+      }
+    } catch (err: any) {
+      console.log('getting error in createOrder', err?.message);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handlePayNow = () => {
+    if (selected === 'card' && !selectedCardId) {
+      showToast('info', 'Please select a card');
+    } else if (selected === 'wallet' && param.amount > user.wallet) {
+      showToast('info', 'Not enough wallet balance');
+    } else {
+      createOrder();
+    }
+  };
+
+  const navigateToAddMoneyToWallet = () => {
+    navigation.navigate(ScreenNames.AddMoneyToWallet, {
+      amount: param.amount - user.wallet,
+    });
+  };
+  const cvvModalHandler = async () => {
+    try {
+      setLoading(true);
+      if (!orderIdRef.current) return;
+      const orderRef = doc(getFirestore(), 'orders', orderIdRef.current);
+      await deleteDoc(orderRef);
+      orderIdRef.current = null;
+      setShowModal(value => !value);
+    } catch (err: any) {
+      console.log('error in deleting order_id', err?.message);
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return (
     <>
       <View style={{ ...styles.container, backgroundColor: theme.bgColor }}>
@@ -115,21 +189,42 @@ const Payment = () => {
           bounces={false}
           contentContainerStyle={styles.scrollview}
         >
-          <Header title="Payment" />
+          <Header title="Payment" style={styles.header} />
 
           <Text style={styles.section}>Select Payment Method</Text>
 
           <PaymentOption
-            label="Credit / Debit Card"
+            label1="Credit / Debit Card"
             selected={selected === 'card'}
             onPress={cardOptionHandler}
           />
 
           <PaymentOption
-            label="App Wallet"
+            label1="App Wallet"
+            label2={`$${user.wallet.toString()}`}
             selected={selected === 'wallet'}
             onPress={walletOptionHandler}
           />
+
+          {param.amount > user.wallet && (
+            <View style={styles.addMoneyContainer}>
+              <Text
+                style={{
+                  ...styles.notEnoughMoney,
+                  color: theme.secondaryTextColor,
+                }}
+              >
+                Add ${param.amount - user.wallet} to wallet to make this
+                transaction!
+              </Text>
+              <TouchableOpacity
+                activeOpacity={0.6}
+                onPress={navigateToAddMoneyToWallet}
+              >
+                <Text style={styles.addMoney}>Add now</Text>
+              </TouchableOpacity>
+            </View>
+          )}
 
           {selected === 'card' &&
             cards.map(item => (
@@ -169,14 +264,25 @@ const Payment = () => {
               Total Amount
             </Text>
             <Text style={{ ...styles.amount, color: theme.mainTextColor }}>
-              ${`${param.amount}`}
+              ${param.amount}
             </Text>
           </View>
 
-          <IconButton text="Pay now" style={styles.button} />
+          <IconButton
+            onPress={handlePayNow}
+            text="Pay now"
+            style={styles.button}
+          />
         </ScrollView>
       </View>
       <Loader visible={loading} />
+      <CVVModal
+        visible={showModal}
+        amount={Number(param.amount)}
+        onClose={cvvModalHandler}
+        onConfirm={makePayment}
+        autoRunOnClose={false}
+      />
     </>
   );
 };

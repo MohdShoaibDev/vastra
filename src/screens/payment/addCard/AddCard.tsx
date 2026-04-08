@@ -3,7 +3,7 @@ import { View } from 'react-native';
 import styles from '@screens/payment/addCard/style';
 import InputField from '@components/textfield/InputField';
 import Header from '@components/header/Header';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '@redux/store/store';
 import DebitCard from '@components/payment/DebitCard';
 import IconButton from '@components/buttons/IconButton';
@@ -11,14 +11,15 @@ import { showToast } from '@utility/helperMethod';
 import {
   addDoc,
   collection,
-  getDocs,
   getFirestore,
 } from '@react-native-firebase/firestore';
 import auth from 'src/firebase/auth';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import Loader from '@components/loader/Loader';
+import { appcardsHandler } from '@redux/slice/cardsSlice';
 
 const AddCard = () => {
+  const dispatch = useDispatch();
   const theme = useSelector((state: RootState) => state.theme);
   const [name, setName] = useState('');
   const [number, setNumber] = useState('');
@@ -62,19 +63,26 @@ const AddCard = () => {
         auth.currentUser.uid,
         'cards',
       );
-      await addDoc(cardRef, {
-        number,
+      const card = await addDoc(cardRef, {
+        number: `**** **** **** ${number.slice(15)}`,
         name,
-        cvv,
         expiry,
       });
+      dispatch(
+        appcardsHandler({
+          id: card.id,
+          number,
+          name,
+          expiry,
+        }),
+      );
       showToast('success', 'Card added successfully');
       setName('');
       setNumber('');
       setExpiry('');
       setCvv('');
     } catch (err: any) {
-      showToast('error', 'Something went wrong')
+      showToast('error', 'Something went wrong');
       console.log('getting error in adding card', err?.message);
     } finally {
       setLoading(false);
@@ -101,7 +109,7 @@ const AddCard = () => {
   return (
     <>
       <View style={{ ...styles.container, backgroundColor: theme.bgColor }}>
-        <Header title="Add Card" showNotification={false} />
+        <Header title="Add Card" showCart={false} />
 
         <KeyboardAwareScrollView bounces={false}>
           <View style={styles.cardView}>

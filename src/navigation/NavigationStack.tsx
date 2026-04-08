@@ -39,6 +39,8 @@ import { RootState } from '@redux/store/store';
 import AddCard from '@screens/payment/addCard/AddCard';
 import Addresses from '@screens/addresses/Addresses';
 import ManagePayment from '@screens/payment/managePayment/ManagePayment';
+import AddMoneyToWallet from '@screens/payment/wallet/AddMoneyToWallet';
+import { appcardsHandler } from '@redux/slice/cardsSlice';
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
 
@@ -105,7 +107,7 @@ const NavigationStack = () => {
   }, []);
 
   useEffect(() => {
-    fetchUserDetails();
+    Promise.all([fetchUserDetails(), getCardList()]);
     const unsubscribe = NetInfo.addEventListener(state => {
       if (state.isConnected && state.isInternetReachable) {
         setInternetIsConnected(true);
@@ -169,10 +171,36 @@ const NavigationStack = () => {
     const user = await getDoc(userRef);
     const data = user.data();
     if (!data) return;
-    dispatch(appUserDetailsHandler({ email: data.email, name: data.name }));
+    dispatch(
+      appUserDetailsHandler({
+        email: data.email,
+        name: data.name,
+        wallet: data.wallet,
+      }),
+    );
     try {
     } catch (err: any) {
       console.log('error in fetching user details', err?.message);
+    }
+  };
+
+  const getCardList = async () => {
+    try {
+      const uid = auth.currentUser?.uid;
+      if (!uid) return;
+      const cardRef = collection(getFirestore(), 'users', uid, 'cards');
+      const snapshot = await getDocs(cardRef);
+      const cards = snapshot?.docs?.map((doc: any) => ({
+        id: doc.id,
+        number: doc.data().number,
+        name: doc.data().name,
+        expiry: doc.data().expiry,
+        cvv: doc.data().cvv,
+      }));
+      dispatch(appcardsHandler(cards));
+    } catch (err: any) {
+      console.log('getting error in cardlist', err?.message);
+    } finally {
     }
   };
 
@@ -220,6 +248,10 @@ const NavigationStack = () => {
                   <Stack.Screen
                     name={ScreenNames.AddCard}
                     component={AddCard}
+                  />
+                  <Stack.Screen
+                    name={ScreenNames.AddMoneyToWallet}
+                    component={AddMoneyToWallet}
                   />
                   <Stack.Screen
                     name={ScreenNames.Profile}

@@ -77,23 +77,6 @@ const Signup: React.FC = () => {
           wallet: 0,
         }),
       );
-      await Promise.all([
-        setDoc(doc(db, 'users', user.user.uid, 'cart'), {
-          createdAt: serverTimestamp(),
-        }),
-        setDoc(doc(db, 'users', user.user.uid, 'wishlist'), {
-          createdAt: serverTimestamp(),
-        }),
-        setDoc(doc(db, 'users', user.user.uid, 'orders'), {
-          createdAt: serverTimestamp(),
-        }),
-        setDoc(doc(db, 'users', user.user.uid, 'cards'), {
-          createdAt: serverTimestamp(),
-        }),
-        setDoc(doc(db, 'users', user.user.uid, 'addresses'), {
-          createdAt: serverTimestamp(),
-        }),
-      ]);
     } catch (err: any) {
       console.log('error in signup', err?.message);
     } finally {
@@ -136,7 +119,7 @@ const Signup: React.FC = () => {
         <Header
           title="Sign up"
           style={styles.header}
-          showNotification={false}
+          showCart={false}
           showBack={navigation.canGoBack()}
         />
 

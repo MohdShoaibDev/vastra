@@ -7,12 +7,13 @@ import { useSelector } from 'react-redux';
 import { RootState } from '@redux/store/store';
 
 type Props = {
-  label: string;
+  label1: string;
+  label2?: string;
   selected: boolean;
   onPress: () => void;
 };
 
-const PaymentOption = ({ label, selected, onPress }: Props) => {
+const PaymentOption = ({ label1, label2 = '', selected, onPress }: Props) => {
   const theme = useSelector((state: RootState) => state.theme);
   return (
     <TouchableOpacity
@@ -24,9 +25,16 @@ const PaymentOption = ({ label, selected, onPress }: Props) => {
       onPress={onPress}
       activeOpacity={0.8}
     >
-      <Text style={{ ...styles.label, color: theme.mainTextColor }}>
-        {label}
-      </Text>
+      {
+        <View style={styles.textContainer}>
+          <Text style={{ ...styles.label, color: theme.mainTextColor }}>
+            {label1}
+          </Text>
+          <Text style={{ ...styles.label2, color: theme.mainTextColor }}>
+            {label2}
+          </Text>
+        </View>
+      }
 
       <View style={[styles.radio, selected && styles.radioSelected]} />
     </TouchableOpacity>
@@ -39,6 +47,7 @@ const styles = StyleSheet.create({
   container: {
     flexDirection: 'row',
     justifyContent: 'space-between',
+    alignItems: 'center',
     padding: 16,
     borderWidth: 1,
     borderColor: commonColors.veryLightGray,
@@ -48,8 +57,19 @@ const styles = StyleSheet.create({
   selected: {
     borderColor: commonColors.primaryTextColor,
   },
+  textContainer: {
+    flex: 1,
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+  },
   label: {
     fontSize: 16,
+    fontWeight: '500',
+  },
+  label2: {
+    marginRight: 10,
+    fontSize: 22,
     fontWeight: '500',
   },
   radio: {

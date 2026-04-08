@@ -5,7 +5,7 @@ import React, {
   useRef,
   useState,
 } from 'react';
-import { Text, FlatList, View } from 'react-native';
+import { Text, FlatList, View, TouchableOpacity } from 'react-native';
 import { FlashList } from '@shopify/flash-list';
 import styles from '@screens/home/style';
 import SearchBar from '@components/searchBar/SearchBar';
@@ -32,6 +32,7 @@ import Loader from '@components/loader/Loader';
 import { Product } from 'src/types/product';
 import { appWishlistIdsHandler } from '@redux/slice/wishlistIdsSlice';
 import { appWishlistDataHandler } from '@redux/slice/wishlistDataSlice';
+import Ionicons from 'react-native-vector-icons/Ionicons';
 
 const Home = () => {
   const theme = useSelector((state: RootState) => state.theme);
@@ -179,12 +180,25 @@ const Home = () => {
     [],
   );
 
+  const navigateToCartScreen = () => {
+    navigation.navigate(ScreenNames.Cart);
+  };
+
   const Header = () => (
     <View>
-      <Text style={{ ...styles.hello, color: theme.mainTextColor }}>Hello</Text>
-      <Text style={{ ...styles.subtitle, color: theme.secondaryTextColor }}>
-        {`Welcome ${user.name}`}
-      </Text>
+      <View style={styles.topSectionContainer}>
+        <View>
+          <Text style={{ ...styles.hello, color: theme.mainTextColor }}>
+            Hello
+          </Text>
+          <Text style={{ ...styles.subtitle, color: theme.secondaryTextColor }}>
+            {`Welcome ${user.name}`}
+          </Text>
+        </View>
+        <TouchableOpacity activeOpacity={0.6} onPress={navigateToCartScreen}>
+          <Ionicons name="cart-outline" size={22} color={theme.mainTextColor} />
+        </TouchableOpacity>
+      </View>
 
       <SearchBar
         onSearch={value => {

@@ -10,10 +10,11 @@ import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '@redux/store/store';
 import auth from 'src/firebase/auth';
 import { getFirestore, doc, deleteDoc } from '@react-native-firebase/firestore';
-import { showToast } from '@utility/helperMethod';
+import { getWidthRespectiveToScreen, showToast } from '@utility/helperMethod';
 import { Product } from 'src/types/product';
 import { appWishlistIdsHandler } from '@redux/slice/wishlistIdsSlice';
 import { appWishlistDataHandler } from '@redux/slice/wishlistDataSlice';
+import Header from '@components/header/Header';
 
 const Wishlist = () => {
   const theme = useSelector((state: RootState) => state.theme);
@@ -79,17 +80,8 @@ const Wishlist = () => {
     [wishlistProducts],
   );
 
-  const Header = () => (
-    <View style={{ marginTop: statusBarHeight, marginBottom: 20 }}>
-      <Text style={{ ...styles.headerTitle, color: theme.mainTextColor }}>
-        Wishlist
-      </Text>
-    </View>
-  );
-
   return (
     <>
-      <Header />
       {wishlistProducts.length > 0 && (
         <FlashList
           data={wishlistProducts}
@@ -97,9 +89,12 @@ const Wishlist = () => {
           keyExtractor={item => item.id.toString()}
           numColumns={2}
           contentContainerStyle={{
-            paddingHorizontal: 20,
+            paddingHorizontal: getWidthRespectiveToScreen(4),
             backgroundColor: theme.bgColor,
           }}
+          ListHeaderComponent={
+            <Header title="Wishlist" showBack={false} style={styles.header} />
+          }
           showsVerticalScrollIndicator={false}
         />
       )}

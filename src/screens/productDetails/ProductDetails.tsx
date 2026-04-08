@@ -26,11 +26,14 @@ import { useRoute } from '@react-navigation/native';
 import { showToast } from '@utility/helperMethod';
 import auth from 'src/firebase/auth';
 import { commonColors } from '@utility/appColors';
+import useAppNavigation from '@hooks/useAppNavigation';
+import { ScreenNames } from '@utility/screenNames';
 const sizes = ['s', 'm', 'l', 'xl', '2xl', '3xl'];
 
 const ProductDetails = () => {
   const theme = useSelector((state: RootState) => state.theme);
   const { id } = useRoute().params;
+  const navigation = useAppNavigation();
   const [productDetails, setProductDetails] = useState<Product | null>(null);
   const [selectedSize, setSelectedSize] = useState<string>('');
   const [productInCartData, setProductInCartData] = useState<any>({
@@ -136,8 +139,9 @@ const ProductDetails = () => {
         });
         setProductInCartData({ quantity: 1 });
       } else {
-        await deleteDoc(cartRef);
-        setProductInCartData({ quantity: 0 });
+        // await deleteDoc(cartRef);
+        // setProductInCartData({ quantity: 0 });
+        navigation.navigate(ScreenNames.Cart);
       }
     } catch (err: any) {
       showToast('error', 'Something went wrong');
@@ -167,7 +171,7 @@ const ProductDetails = () => {
         backgroundColor: theme.bgColor,
       }}
     >
-      <Header title="" />
+      <Header title="" style={styles.header} />
       {productDetails && (
         <ScrollView showsVerticalScrollIndicator={false}>
           <FlatList
@@ -279,16 +283,8 @@ const ProductDetails = () => {
       {productDetails && (
         <IconButton
           onPress={productCartHandler}
-          text={
-            productInCartData.quantity > 0 ? 'Remove from cart' : 'Add to cart'
-          }
-          style={{
-            ...styles.cartButton,
-            backgroundColor:
-              productInCartData.quantity > 0
-                ? commonColors.red
-                : commonColors.primaryTextColor,
-          }}
+          text={productInCartData.quantity > 0 ? 'Go to cart' : 'Add to cart'}
+          style={styles.cartButton}
           textStyle={styles.cartText}
         />
       )}

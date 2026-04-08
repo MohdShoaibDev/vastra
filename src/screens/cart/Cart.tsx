@@ -16,17 +16,16 @@ import {
 import auth from 'src/firebase/auth';
 import { Product } from 'src/types/product';
 import { showToast } from '@utility/helperMethod';
-import { useStatusBarHeight } from '@hooks/useStatusBarHeight';
 import { useIsFocused } from '@react-navigation/native';
 import useAppNavigation from '@hooks/useAppNavigation';
 import { ScreenNames } from '@utility/screenNames';
 import IconButton from '@components/buttons/IconButton';
+import Header from '@components/header/Header';
 
 const Cart = () => {
   const theme = useSelector((state: RootState) => state.theme);
   const focused = useIsFocused();
   const navigation = useAppNavigation();
-  const { statusBarHeight } = useStatusBarHeight();
   const [items, setItems] = useState<any>([]);
   const [loading, setLoading] = useState(true);
 
@@ -90,40 +89,45 @@ const Cart = () => {
     sizes,
   }: Product) => {
     try {
+      if (quantity + 1 > sizes[`${size}`]) {
+        showToast('info', `We only have ${sizes[`${size}`]} items right now.`);
+        return;
+      }
+      if (quantity + 1 > maxPurchasedAtOnce) {
+        showToast(
+          'info',
+          `Max ${maxPurchasedAtOnce} items are allowed at once.`,
+        );
+        return;
+      }
+      setItems((prev: any) =>
+        prev.map((i: any) =>
+          i.id === id ? { ...i, quantity: i.quantity + 1 } : i,
+        ),
+      );
       await productCartHandler(id, quantity + 1);
     } catch (err: any) {
       console.log('getting error in increasing qunatity', err?.message);
     }
-    if (quantity + 1 > sizes[`${size}`]) {
-      showToast('info', `We only have ${sizes[`${size}`]} items right now.`);
-      return;
-    }
-    if (quantity + 1 > maxPurchasedAtOnce) {
-      showToast('info', `Max ${maxPurchasedAtOnce} items are allowed at once.`);
-      return;
-    }
-    setItems((prev: any) =>
-      prev.map((i: any) =>
-        i.id === id ? { ...i, quantity: i.quantity + 1 } : i,
-      ),
-    );
   };
 
   const decrease = async ({ id, quantity }: Product) => {
     try {
-      await productCartHandler(id, quantity - 1);
       if (quantity - 1 === 0) {
         const filterData = items.filter((item: Product) => item.id != id);
         setItems(filterData);
       }
+      await productCartHandler(id, quantity - 1);
+      setItems((prev: any) =>
+        prev.map((i: any) =>
+          i.id === id && i.quantity > 1
+            ? { ...i, quantity: i.quantity - 1 }
+            : i,
+        ),
+      );
     } catch (err: any) {
       console.log('getting error in decreasing qunatity', err?.message);
     }
-    setItems((prev: any) =>
-      prev.map((i: any) =>
-        i.id === id && i.quantity > 1 ? { ...i, quantity: i.quantity - 1 } : i,
-      ),
-    );
   };
 
   const total = items.reduce(
@@ -132,7 +136,9 @@ const Cart = () => {
   );
 
   const navigateToPaymentScreen = () => {
-    navigation.navigate(ScreenNames.Payment, { amount: total });
+    navigation.navigate(ScreenNames.Payment, {
+      amount: total + (total <= 99 ? 19 : 0),
+    });
   };
 
   return (
@@ -143,11 +149,7 @@ const Cart = () => {
         bounces={false}
         contentContainerStyle={styles.contentContainerStyle}
       >
-        <View style={{ marginTop: statusBarHeight }}>
-          <Text style={{ ...styles.headerTitle, color: theme.mainTextColor }}>
-            Cart
-          </Text>
-        </View>
+        <Header title="Cart" showCart={false} style={styles.header} />
 
         {items.length > 0 && (
           <>

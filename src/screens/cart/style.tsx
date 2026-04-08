@@ -10,7 +10,7 @@ export const styles = StyleSheet.create({
     flex: 1,
     alignSelf: 'center',
     width: '100%',
-    paddingHorizontal: getWidthRespectiveToScreen(5),
+    paddingHorizontal: getWidthRespectiveToScreen(4),
   },
   scrollview: {
     flex: 1,
@@ -18,11 +18,8 @@ export const styles = StyleSheet.create({
   contentContainerStyle: {
     paddingBottom: 20,
   },
-  headerTitle: {
-    marginBottom: 20,
-    textAlign: 'center',
-    fontSize: 22,
-    fontWeight: '600',
+  header:{
+    marginBottom: 20
   },
   deliveryBox: {
     marginTop: 30,

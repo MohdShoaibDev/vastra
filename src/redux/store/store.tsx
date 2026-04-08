@@ -4,6 +4,7 @@ import userReducer from '@redux/slice/userSlice';
 import reloadReducer from '@redux/slice/reloadSlice';
 import wishlistReducer from '@redux/slice/wishlistIdsSlice';
 import wishlistDataReducer from '@redux/slice/wishlistDataSlice';
+import cardsReducer from '@redux/slice/cardsSlice';
 
 export const store = configureStore({
   reducer: {
@@ -12,6 +13,7 @@ export const store = configureStore({
     reload: reloadReducer,
     wishlistIds: wishlistReducer,
     wishlistData: wishlistDataReducer,
+    cards: cardsReducer,
   },
 });
 

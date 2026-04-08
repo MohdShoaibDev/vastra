@@ -1,20 +1,15 @@
 import Header from '@components/header/Header';
 import React from 'react';
-import { View, Text, StyleSheet } from 'react-native';
+import { View, Text } from 'react-native';
+import styles from '@screens/termsAndConditions/style';
 
 const TermsAndCondition = () => {
   return (
     <View style={styles.container}>
-      <Header title="Terms & Conditions" />
+      <Header title="Terms & Conditions" style={styles.header} />
       <Text>TermsAndCondition</Text>
     </View>
   );
 };
-
-const styles = StyleSheet.create({
-  container: {
-    paddingHorizontal: 10,
-  },
-});
 
 export default TermsAndCondition;

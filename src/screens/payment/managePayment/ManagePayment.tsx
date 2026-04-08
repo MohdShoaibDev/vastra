@@ -1,80 +1,36 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { View, Text, ScrollView, TouchableOpacity } from 'react-native';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '@redux/store/store';
 import Header from '@components/header/Header';
 import DebitCard from '@components/payment/DebitCard';
 import Loader from '@components/loader/Loader';
 import styles from '@screens/payment/managePayment/style';
 
-import {
-  collection,
-  deleteDoc,
-  doc,
-  getDocs,
-  getFirestore,
-} from '@react-native-firebase/firestore';
+import { deleteDoc, doc, getFirestore } from '@react-native-firebase/firestore';
 import auth from 'src/firebase/auth';
 import useAppNavigation from '@hooks/useAppNavigation';
 import { ScreenNames } from '@utility/screenNames';
-import { useIsFocused } from '@react-navigation/native';
 import { commonColors } from '@utility/appColors';
 import IconButton from '@components/buttons/IconButton';
 import { showToast } from '@utility/helperMethod';
-
-type Card = {
-  id: string;
-  number: string;
-  name: string;
-  expiry: string;
-};
+import { appcardsHandler } from '@redux/slice/cardsSlice';
 
 const ManagePayment = () => {
+  const dispatch = useDispatch();
   const theme = useSelector((state: RootState) => state.theme);
   const user = useSelector((state: RootState) => state.user);
+  const cards = useSelector((state: RootState) => state.cards);
   const navigation = useAppNavigation();
-  const focused = useIsFocused();
-  const [cards, setCards] = useState<Card[]>([]);
   const [loading, setLoading] = useState(false);
   const [selectedCard, setSelectedCard] = useState('');
-
-  useEffect(() => {
-    focused && fetchData();
-  }, [focused]);
-
-  const fetchData = async () => {
-    try {
-      setLoading(true);
-      const uid = auth.currentUser?.uid;
-      if (!uid) return;
-
-      const snapshot = await getDocs(
-        collection(getFirestore(), 'users', uid, 'cards'),
-      );
-
-      const cardList = snapshot.docs.map((doc: any) => {
-        const data = doc.data();
-        return {
-          id: doc.id,
-          number: data.number,
-          name: data.name,
-          expiry: data.expiry,
-        };
-      });
-      setCards(cardList);
-    } catch (err) {
-      console.log('Error fetching payments data:', err);
-    } finally {
-      setLoading(false);
-    }
-  };
 
   const handleAddCard = () => {
     navigation.navigate(ScreenNames.AddCard);
   };
 
   const handleAddMoney = () => {
-    console.log('Add money to wallet');
+    navigation.navigate(ScreenNames.AddMoneyToWallet);
   };
 
   const selectedCardHandler = (id: string) => {
@@ -89,7 +45,7 @@ const ManagePayment = () => {
       const cardRef = doc(getFirestore(), 'users', uid, 'cards', selectedCard);
       await deleteDoc(cardRef);
       const filterData = cards.filter((card: any) => card.id != selectedCard);
-      setCards(filterData);
+      dispatch(appcardsHandler(filterData));
       setSelectedCard('');
       showToast('success', 'Card removed successfully.');
     } catch (err: any) {
@@ -99,7 +55,7 @@ const ManagePayment = () => {
       setLoading(false);
     }
   };
-
+console.log(user)
   return (
     <>
       <View style={[styles.container, { backgroundColor: theme.bgColor }]}>
@@ -160,7 +116,7 @@ const ManagePayment = () => {
               ))}
             </View>
           ) : (
-            <Text style={styles.emptyText}>No cards added yet</Text>
+            <Text style={styles.emptyText}>No card added yet</Text>
           )}
           {selectedCard && (
             <IconButton

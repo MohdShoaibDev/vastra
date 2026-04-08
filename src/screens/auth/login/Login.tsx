@@ -107,7 +107,7 @@ const Login: React.FC = () => {
         <Header
           title="Sign In"
           style={styles.header}
-          showNotification={false}
+          showCart={false}
           showBack={navigation.canGoBack()}
         />
 

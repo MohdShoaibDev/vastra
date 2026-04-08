@@ -1,12 +1,17 @@
 import { commonColors } from '@utility/appColors';
-import { getHeightRespectiveToScreen, getWidthRespectiveToScreen } from '@utility/helperMethod';
+import {
+  getHeightRespectiveToScreen,
+  getWidthRespectiveToScreen,
+} from '@utility/helperMethod';
 import { StyleSheet } from 'react-native';
 
 export default StyleSheet.create({
   container: {
     flex: 1,
   },
-
+  header: {
+    paddingHorizontal: getWidthRespectiveToScreen(4),
+  },
   mainImage: {
     width: getWidthRespectiveToScreen(100),
     height: 350,
@@ -87,7 +92,7 @@ export default StyleSheet.create({
 
   sizeSelected: {
     borderWidth: 1,
-    borderColor: commonColors.primaryTextColor
+    borderColor: commonColors.primaryTextColor,
   },
 
   sizeDisabled: {
@@ -169,6 +174,7 @@ export default StyleSheet.create({
     alignItems: 'center',
     borderTopRightRadius: 0,
     borderTopLeftRadius: 0,
+    backgroundColor: commonColors.primaryTextColor,
   },
 
   cartText: {

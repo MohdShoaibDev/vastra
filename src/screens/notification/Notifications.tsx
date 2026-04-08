@@ -1,18 +1,15 @@
 import Header from '@components/header/Header';
 import React from 'react';
-import { View, Text, StyleSheet } from 'react-native';
+import { View, Text } from 'react-native';
+import styles from '@screens/notification/style';
 
 const Notifications = () => {
   return (
     <View style={styles.container}>
-      <Header title="Notifications" showNotification={false} />
+      <Header title="Notifications" showCart={false} style={styles.header} />
       <Text>Notifications</Text>
     </View>
   );
 };
-
-const styles = StyleSheet.create({
-  container: {},
-});
 
 export default Notifications;

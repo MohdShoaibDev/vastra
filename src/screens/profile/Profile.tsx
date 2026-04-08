@@ -15,7 +15,7 @@ import { RootState } from '@redux/store/store';
 import { useStatusBarHeight } from '@hooks/useStatusBarHeight';
 
 const settingsData = [
-  { id: '1', title: 'Orders', icon: 'bag-outline' },
+  { id: '1', title: 'Cart', icon: 'cart-outline' },
   { id: '2', title: 'Notifications', icon: 'notifications-outline' },
   { id: '3', title: 'Theme', icon: 'sunny-outline', rightText: 'Light' },
   { id: '4', title: 'Addresses', icon: 'location-outline' },
@@ -114,8 +114,8 @@ const Profile = () => {
   const tabHandler = (id: string) => {
     console.log(id)
     switch (id) {
-      case 'Orders':
-        navigationHandler(ScreenNames.Orders);
+      case 'Cart':
+        navigationHandler(ScreenNames.Cart);
         break;
       case 'Notifications':
         navigationHandler(ScreenNames.Notifications);
@@ -155,6 +155,7 @@ const Profile = () => {
       onPress={() => {
         tabHandler(item?.title);
       }}
+      activeOpacity={0.6}
     >
       <View style={styles.rowLeft}>
         <View

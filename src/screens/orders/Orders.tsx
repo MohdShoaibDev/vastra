@@ -1,18 +1,18 @@
-import Header from '@components/header/Header';
 import React from 'react';
-import { View, Text, StyleSheet } from 'react-native';
+import { View, Text } from 'react-native';
+import styles from '@screens/orders/style';
+import { useSelector } from 'react-redux';
+import { RootState } from '@redux/store/store';
+import Header from '@components/header/Header';
 
 const Orders = () => {
+  const theme = useSelector((state: RootState) => state.theme);
   return (
     <View style={styles.container}>
-      <Header title="Orders" />
+      <Header title="Orders" showBack={false} style={styles.header} />
       <Text>Order</Text>
     </View>
   );
 };
-
-const styles = StyleSheet.create({
-  container: {},
-});
 
 export default Orders;

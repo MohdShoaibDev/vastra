@@ -4,13 +4,14 @@ import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import Home from '@screens/home/Home';
 import { ScreenNames } from '@utility/screenNames';
 import Icon from 'react-native-vector-icons/Feather';
+import Ionicons from 'react-native-vector-icons/Ionicons';
 import Wishlist from '@screens/wishlist/Wishlist';
-import Cart from '@screens/cart/Cart';
 import Profile from '@screens/profile/Profile';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useSelector } from 'react-redux';
 import { RootState } from '@redux/store/store';
 import { ThemeType } from '@redux/slice/themeSlice';
+import Orders from '@screens/orders/Orders';
 
 const Tab = createBottomTabNavigator();
 
@@ -49,11 +50,11 @@ const BottomTab = () => {
         }}
       />
       <Tab.Screen
-        name={ScreenNames.Cart}
-        component={Cart}
+        name={ScreenNames.Orders}
+        component={Orders}
         options={{
           tabBarIcon: ({ color, size }) => (
-            <Icon name="shopping-bag" size={size} color={color} />
+            <Ionicons name="bag-outline" size={size} color={color} />
           ),
         }}
       />

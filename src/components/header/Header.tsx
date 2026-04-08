@@ -7,6 +7,7 @@ import {
   ViewStyle,
 } from 'react-native';
 import Feather from 'react-native-vector-icons/Feather';
+import Ionicons from 'react-native-vector-icons/Ionicons';
 import { commonColors } from '@utility/appColors';
 import { useSelector } from 'react-redux';
 import { RootState } from '@redux/store/store';
@@ -17,22 +18,22 @@ import { ScreenNames } from '@utility/screenNames';
 interface Props {
   title: string;
   showBack?: boolean;
-  showNotification?: boolean;
+  showCart?: boolean;
   style?: ViewStyle;
 }
 
 const Header = ({
   title,
   showBack = true,
-  showNotification = true,
+  showCart = true,
   style = {},
 }: Props) => {
   const navigation = useAppNavigation();
   const theme = useSelector((state: RootState) => state.theme);
   const { statusBarHeight } = useStatusBarHeight();
 
-  const navigateToNotificationScreen = () => {
-    navigation.navigate(ScreenNames.Notifications);
+  const navigateToCartScreen = () => {
+    navigation.navigate(ScreenNames.Cart);
   };
 
   return (
@@ -52,9 +53,13 @@ const Header = ({
       </View>
 
       <View style={styles.right}>
-        {showNotification && (
-          <TouchableOpacity onPress={navigateToNotificationScreen}>
-            <Feather name="bell" size={22} color={theme.mainTextColor} />
+        {showCart && (
+          <TouchableOpacity onPress={navigateToCartScreen}>
+            <Ionicons
+              name="cart-outline"
+              size={20}
+              color={theme.primaryIconColor}
+            />
           </TouchableOpacity>
         )}
       </View>
