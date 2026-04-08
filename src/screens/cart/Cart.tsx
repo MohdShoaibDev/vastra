@@ -21,9 +21,13 @@ import useAppNavigation from '@hooks/useAppNavigation';
 import { ScreenNames } from '@utility/screenNames';
 import IconButton from '@components/buttons/IconButton';
 import Header from '@components/header/Header';
+import AddressCard from '@components/address/AddressCard';
+import { commonColors } from '@utility/appColors';
+import ChangeDeliveryAddressModal from '@components/modal/ChangeDeliveryAddressModal';
 
 const Cart = () => {
   const theme = useSelector((state: RootState) => state.theme);
+  const user = useSelector((state: RootState) => state.user);
   const focused = useIsFocused();
   const navigation = useAppNavigation();
   const [items, setItems] = useState<any>([]);
@@ -140,7 +144,7 @@ const Cart = () => {
       amount: total + (total <= 99 ? 19 : 0),
     });
   };
-
+  console.log(user.address);
   return (
     <View style={{ ...styles.container, backgroundColor: theme.bgColor }}>
       <ScrollView
@@ -150,6 +154,46 @@ const Cart = () => {
         contentContainerStyle={styles.contentContainerStyle}
       >
         <Header title="Cart" showCart={false} style={styles.header} />
+
+        {user.address.id && (
+          <>
+            <View style={styles.deliveredToTextContainer}>
+              <Text
+                style={{
+                  ...styles.deliveredToText,
+                  color: theme.mainTextColor,
+                }}
+              >
+                Delivered to
+              </Text>
+              <TouchableOpacity>
+                <Text
+                  style={{
+                    ...styles.deliveredToText,
+                    textDecorationLine: 'underline',
+                    color: commonColors.primaryTextColor,
+                  }}
+                >
+                  Change delivery address
+                </Text>
+              </TouchableOpacity>
+            </View>
+            <AddressCard
+              id={user.address.id}
+              name={user.address.name}
+              type={
+                user.address?.type === 'Other'
+                  ? user.address.otherAddressType
+                  : user.address.type
+              }
+              markAsDefault={user.address.default}
+              number={user.address.phone}
+              address={`${user.address.locality}, ${user.address.city}, ${user.address.pincode}, ${user.address.state}`}
+              style={styles.addressCard}
+              showMenu={false}
+            />
+          </>
+        )}
 
         {items.length > 0 && (
           <>
@@ -231,6 +275,7 @@ const Cart = () => {
         )}
       </ScrollView>
       <Loader visible={loading} />
+      <ChangeDeliveryAddressModal visible={true} onClose={() => {}} />
     </View>
   );
 };

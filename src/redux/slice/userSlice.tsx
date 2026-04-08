@@ -6,6 +6,16 @@ type userType = {
   profileImage: string;
   phoneNumber: string;
   wallet: number;
+  address: {
+    id: number;
+    name: string;
+    phone: string;
+    locality: string;
+    city: string;
+    pincode: string;
+    state: string;
+    default: boolean;
+  };
 };
 
 const initialState: userType = {
@@ -14,6 +24,16 @@ const initialState: userType = {
   profileImage: '',
   phoneNumber: '',
   wallet: 0,
+  address: {
+    id: 0,
+    name: '',
+    phone: '',
+    locality: '',
+    city: '',
+    pincode: '',
+    state: '',
+    default: false,
+  },
 };
 
 const userSlice = createSlice({

@@ -27,13 +27,11 @@ import { showToast } from '@utility/helperMethod';
 import auth from 'src/firebase/auth';
 import { commonColors } from '@utility/appColors';
 import useAppNavigation from '@hooks/useAppNavigation';
-import { ScreenNames } from '@utility/screenNames';
 const sizes = ['s', 'm', 'l', 'xl', '2xl', '3xl'];
 
 const ProductDetails = () => {
   const theme = useSelector((state: RootState) => state.theme);
   const { id } = useRoute().params;
-  const navigation = useAppNavigation();
   const [productDetails, setProductDetails] = useState<Product | null>(null);
   const [selectedSize, setSelectedSize] = useState<string>('');
   const [productInCartData, setProductInCartData] = useState<any>({
@@ -139,9 +137,8 @@ const ProductDetails = () => {
         });
         setProductInCartData({ quantity: 1 });
       } else {
-        // await deleteDoc(cartRef);
-        // setProductInCartData({ quantity: 0 });
-        navigation.navigate(ScreenNames.Cart);
+        await deleteDoc(cartRef);
+        setProductInCartData({ quantity: 0 });
       }
     } catch (err: any) {
       showToast('error', 'Something went wrong');
@@ -185,12 +182,6 @@ const ProductDetails = () => {
           />
 
           <View style={styles.infoContainer}>
-            {/* <Text
-              style={{ ...styles.category, color: theme.secondaryTextColor }}
-            >
-              {productDetails.title}
-            </Text> */}
-
             <View style={styles.titleRow}>
               <Text style={{ ...styles.title, color: theme.mainTextColor }}>
                 {productDetails.title}
@@ -283,8 +274,16 @@ const ProductDetails = () => {
       {productDetails && (
         <IconButton
           onPress={productCartHandler}
-          text={productInCartData.quantity > 0 ? 'Go to cart' : 'Add to cart'}
-          style={styles.cartButton}
+          text={
+            productInCartData.quantity > 0 ? 'Remove from cart' : 'Add to cart'
+          }
+          style={{
+            ...styles.cartButton,
+            backgroundColor:
+              productInCartData.quantity > 0
+                ? commonColors.red
+                : commonColors.primaryTextColor,
+          }}
           textStyle={styles.cartText}
         />
       )}

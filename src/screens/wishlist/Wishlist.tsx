@@ -82,28 +82,25 @@ const Wishlist = () => {
 
   return (
     <>
-      {wishlistProducts.length > 0 && (
-        <FlashList
-          data={wishlistProducts}
-          renderItem={renderItem}
-          keyExtractor={item => item.id.toString()}
-          numColumns={2}
-          contentContainerStyle={{
-            paddingHorizontal: getWidthRespectiveToScreen(4),
-            backgroundColor: theme.bgColor,
-          }}
-          ListHeaderComponent={
-            <Header title="Wishlist" showBack={false} style={styles.header} />
-          }
-          showsVerticalScrollIndicator={false}
-        />
-      )}
-
-      {wishlistProducts.length === 0 && (
-        <Text style={{ ...styles.noDataFound, color: theme.mainTextColor }}>
-          Wishlist is empty
-        </Text>
-      )}
+      <FlashList
+        data={wishlistProducts}
+        renderItem={renderItem}
+        keyExtractor={item => item.id.toString()}
+        numColumns={2}
+        contentContainerStyle={{
+          paddingHorizontal: getWidthRespectiveToScreen(4),
+          backgroundColor: theme.bgColor,
+        }}
+        ListHeaderComponent={
+          <Header title="Wishlist" showBack={false} style={styles.header} />
+        }
+        ListEmptyComponent={
+          <Text style={{ ...styles.noDataFound, color: theme.mainTextColor }}>
+            Wishlist is empty
+          </Text>
+        }
+        showsVerticalScrollIndicator={false}
+      />
     </>
   );
 };

@@ -79,6 +79,7 @@ const Signup: React.FC = () => {
       );
     } catch (err: any) {
       console.log('error in signup', err?.message);
+      showToast('error', err?.message || 'Something went wrong')
     } finally {
       setLoader(false);
     }
@@ -253,7 +254,7 @@ const Signup: React.FC = () => {
             textStyle={styles.loginText}
           />
 
-          <Text style={styles.or}>Or Sign up with</Text>
+          {/* <Text style={styles.or}>Or Sign up with</Text>
 
           <IconButton
             iconName="google"
@@ -261,7 +262,7 @@ const Signup: React.FC = () => {
             text="Continue with google"
             style={styles.google}
             textStyle={styles.googleText}
-          />
+          /> */}
 
           <View style={styles.signin}>
             <Text style={{ ...styles.text1, color: theme.secondaryTextColor }}>

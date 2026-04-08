@@ -14,6 +14,7 @@ export const ScreenNames = {
   Payment: 'Payment',
   AddCard: 'AddCard',
   Addresses: 'Addresses',
+  AddAddress: 'AddAddress',
   ManagePayment: 'ManagePayment',
   AddMoneyToWallet: 'AddMoneyToWallet'
 };

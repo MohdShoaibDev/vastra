@@ -37,7 +37,7 @@ const ProfileHeader = memo(() => {
       </View>
 
       <View style={styles.profileSection}>
-        <View style={styles.imageWrapper}>
+        {/* <View style={styles.imageWrapper}>
           <FastImage
             source={{
               uri: 'https://picsum.photos/id/237',
@@ -55,9 +55,9 @@ const ProfileHeader = memo(() => {
             />
             <Text style={styles.editText}>Edit</Text>
           </TouchableOpacity>
-        </View>
+        </View> */}
 
-        <Text style={{ ...styles.name, color: theme.mainTextColor }}>
+        <Text style={{ ...styles.name, color: commonColors.primaryTextColor }}>
           {user.name}
         </Text>
       </View>

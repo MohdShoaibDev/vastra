@@ -20,7 +20,6 @@ export default StyleSheet.create({
 
   profileSection: {
     alignItems: 'center',
-    marginTop: 20,
   },
 
   imageWrapper: {

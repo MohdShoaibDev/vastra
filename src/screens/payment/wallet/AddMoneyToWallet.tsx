@@ -78,6 +78,7 @@ const AddMoneyToWallet = () => {
       setAmount('');
       setSelectedCard('');
       showToast('success', 'Balance updated successfully');
+      navigation.goBack();
     } catch (err: any) {
       showToast('error', 'Payment failed');
       console.log('getting error while adding balance to wallet', err?.message);
@@ -170,6 +171,10 @@ const AddMoneyToWallet = () => {
           style={styles.button}
           onPress={cvvModalHandler}
         />
+        <Text style={{ marginTop: 15, color: theme.secondaryTextColor }}>
+          Note: Fake transaction for demo purpose only, don't add you card
+          details.
+        </Text>
       </KeyboardAwareScrollView>
       <CVVModal
         visible={showModal}

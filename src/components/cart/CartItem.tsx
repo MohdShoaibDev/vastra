@@ -13,6 +13,7 @@ type CartItemType = {
   quantity: number;
   image: string;
   bg: string;
+  size: string;
 };
 
 type Props = {
@@ -40,7 +41,7 @@ const CartItem: React.FC<Props> = ({ item, onIncrease, onDecrease }) => {
           numberOfLines={1}
           style={{ ...styles.subtitle, color: theme.secondaryTextColor }}
         >
-          {item.description}
+          {'Size: ' + item.size.toUpperCase()}
         </Text>
         <Text style={{ ...styles.price, color: theme.mainTextColor }}>
           ${item.price}

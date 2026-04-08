@@ -18,8 +18,23 @@ export const styles = StyleSheet.create({
   contentContainerStyle: {
     paddingBottom: 20,
   },
-  header:{
-    marginBottom: 20
+  header: {
+    marginBottom: 20,
+  },
+  deliveredToTextContainer:{
+    flexDirection: 'row',
+    justifyContent: 'flex-start',
+    alignItems: 'center',
+    gap: 5
+  },
+  deliveredToText: {
+    fontSize: 16,
+    fontWeight: '500',
+  },
+  addressCard: {
+    marginTop: 5,
+    marginBottom: 20,
+    borderWidth: 0,
   },
   deliveryBox: {
     marginTop: 30,

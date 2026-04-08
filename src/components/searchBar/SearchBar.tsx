@@ -5,6 +5,7 @@ import {
   StyleSheet,
   TouchableOpacity,
   Text,
+  ViewStyle,
 } from 'react-native';
 import { commonColors } from '@utility/appColors';
 import Feather from 'react-native-vector-icons/Feather';
@@ -13,9 +14,10 @@ import { RootState } from '@redux/store/store';
 
 interface SearchBarProps {
   onSearch: (text: string) => void;
+  style?: ViewStyle;
 }
 
-const SearchBar: React.FC<SearchBarProps> = ({ onSearch }) => {
+const SearchBar: React.FC<SearchBarProps> = ({ onSearch, style = {} }) => {
   const theme = useSelector((state: RootState) => state.theme);
   const [search, setSearch] = useState('');
 
@@ -48,7 +50,7 @@ const SearchBar: React.FC<SearchBarProps> = ({ onSearch }) => {
   };
 
   return (
-    <View style={styles.row}>
+    <View style={{ ...styles.row, ...style }}>
       <View style={{ ...styles.searchBox, backgroundColor: theme.card }}>
         <Feather name="search" size={20} color={commonColors.gray} />
         <TextInput

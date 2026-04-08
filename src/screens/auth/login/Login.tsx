@@ -59,13 +59,13 @@ const Login: React.FC = () => {
       if (!userCred.user.uid) return;
       const userRef: any = doc(getFirestore(), 'users', userCred.user.uid);
       const user = await getDoc(userRef);
-      const data = user.data();
-      if (!data) return;
+      const _data: any = user.data();
+      if (!_data) return;
       dispatch(
         appUserDetailsHandler({
-          email: data.email,
-          name: data.name,
-          wallet: data.wallet,
+          email: _data.email,
+          name: _data.name,
+          wallet: _data.wallet,
         }),
       );
       showToast('success', 'Login Successfully');
@@ -203,7 +203,7 @@ const Login: React.FC = () => {
             style={styles.loginBtn}
             textStyle={styles.loginText}
           />
-
+          {/* 
           <Text style={styles.or}>Or Sign in with</Text>
 
           <IconButton
@@ -212,7 +212,7 @@ const Login: React.FC = () => {
             text="Login with google"
             style={styles.google}
             textStyle={styles.googleText}
-          />
+          /> */}
 
           <View style={styles.signin}>
             <Text style={{ ...styles.text1, color: theme.mainTextColor }}>

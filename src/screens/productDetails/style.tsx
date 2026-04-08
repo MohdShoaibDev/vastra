@@ -46,6 +46,8 @@ export default StyleSheet.create({
   },
 
   title: {
+    width: '90%',
+    paddingRight: 10,
     fontSize: 22,
     fontWeight: 'bold',
   },
@@ -174,7 +176,6 @@ export default StyleSheet.create({
     alignItems: 'center',
     borderTopRightRadius: 0,
     borderTopLeftRadius: 0,
-    backgroundColor: commonColors.primaryTextColor,
   },
 
   cartText: {

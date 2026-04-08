@@ -5,6 +5,7 @@ import {
   StyleSheet,
   TouchableOpacity,
   TextInputProps,
+  ViewStyle,
 } from 'react-native';
 import Icon from 'react-native-vector-icons/Feather';
 import { commonColors } from '@utility/appColors';
@@ -14,6 +15,7 @@ import { RootState } from '@redux/store/store';
 interface InputFieldProps extends TextInputProps {
   showToggle?: boolean;
   secureTextEntry?: boolean;
+  style?: ViewStyle;
   onToggle?: () => void;
 }
 
@@ -21,12 +23,17 @@ const InputField: React.FC<InputFieldProps> = ({
   showToggle = false,
   secureTextEntry,
   onToggle,
+  style = {},
   ...rest
 }) => {
   const theme = useSelector((state: RootState) => state.theme);
   return (
     <View
-      style={{ ...styles.container, backgroundColor: theme.textFieldBgColor }}
+      style={{
+        ...styles.container,
+        ...style,
+        backgroundColor: theme.textFieldBgColor,
+      }}
     >
       <TextInput
         {...rest}

@@ -37,9 +37,9 @@ const AddCard = () => {
 
     const isValid =
       name.length >= 3 &&
-      cvv.length === 3 &&
       number.length === 19 &&
-      expiry.length === 5;
+      expiry.length === 5 &&
+      Number(expiry.split('/')[0]) <= 12;
 
     if (!isValid) {
       showToast('error', 'Invalid input format');
@@ -142,7 +142,7 @@ const AddCard = () => {
                 />
               </View>
 
-              <View style={[styles.inputHalf, styles.rightGap]}>
+              {/* <View style={[styles.inputHalf, styles.rightGap]}>
                 <InputField
                   placeholder="CVV"
                   value={cvv}
@@ -150,7 +150,7 @@ const AddCard = () => {
                   keyboardType="numeric"
                   maxLength={3}
                 />
-              </View>
+              </View> */}
             </View>
           </View>
 

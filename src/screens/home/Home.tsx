@@ -204,9 +204,10 @@ const Home = () => {
         onSearch={value => {
           console.log('search:', value);
         }}
+        style={{marginBottom: 10}}
       />
 
-      <SectionHeader title="Choose Brand" />
+      {/* <SectionHeader title="Choose Brand" />
 
       <FlatList
         horizontal
@@ -214,9 +215,9 @@ const Home = () => {
         keyExtractor={item => item}
         renderItem={renderBrandItem}
         showsHorizontalScrollIndicator={false}
-      />
+      /> */}
 
-      <SectionHeader title="New Arrival" />
+      {/* <SectionHeader title="New Arrival" /> */}
     </View>
   );
 

@@ -17,6 +17,7 @@ import {
   collection,
   deleteDoc,
   doc,
+  getDoc,
   getDocs,
   getFirestore,
   serverTimestamp,
@@ -27,6 +28,7 @@ import CVVModal from '@components/modal/CVVModal';
 import Loader from '@components/loader/Loader';
 import { appUserDetailsHandler } from '@redux/slice/userSlice';
 import { Product } from 'src/types/product';
+import { appReloadHandler } from '@redux/slice/reloadSlice';
 
 const Payment = () => {
   const theme = useSelector((state: RootState) => state.theme);
@@ -59,8 +61,19 @@ const Payment = () => {
   };
 
   const updateInventory = async (cartItems: Product[]) => {
-    console.log(cartItems);
     try {
+      cartItems.forEach(async (_doc: any) => {
+        const productRef = doc(getFirestore(), 'products', _doc.id);
+        const document = await getDoc(productRef);
+        const data: any = document.data();
+        if (!data) return;
+        const latestSizeData = { ...data.size };
+        latestSizeData[_doc.data().size] =
+          latestSizeData[_doc.data().size] - _doc.data().quantity;
+        await updateDoc(productRef, {
+          size: latestSizeData,
+        });
+      });
     } catch (err: any) {
       console.log('getting error in updating inventory', err?.message);
     }
@@ -77,12 +90,13 @@ const Payment = () => {
         amount: param.amount,
         method: selected,
         status: 'success',
+        paymentMode: selected,
         createdAt: serverTimestamp,
       });
       if (!orderIdRef.current) return;
       await updateDoc(doc(getFirestore(), 'orders', orderIdRef.current), {
         paymentId: paymentSnapshot.id,
-        status: 'success',
+        status: 2,
       });
       const snapshot = await getDocs(
         collection(getFirestore(), 'users', auth.currentUser!.uid, 'cart'),
@@ -94,9 +108,9 @@ const Payment = () => {
         await updateDoc(doc(getFirestore(), 'users', auth.currentUser!.uid), {
           wallet: user.wallet - param.amount,
         });
+        dispatch(appUserDetailsHandler({ wallet: user.wallet - param.amount }));
       }
       await updateInventory(snapshot.docs);
-      dispatch(appUserDetailsHandler({ wallet: user.wallet - param.amount }));
       navigation.reset({
         index: 0,
         routes: [{ name: ScreenNames.BottomTab }],
@@ -125,7 +139,7 @@ const Payment = () => {
           price: doc.data().price,
           quantity: doc.data().quantity,
           size: doc.data().size,
-          id: doc.id,
+          productId: doc.id,
         }));
       }
       const orderRef = collection(getFirestore(), 'orders');
@@ -133,8 +147,9 @@ const Payment = () => {
         userId: uid,
         items,
         totalAmount: param.amount,
-        status: 'pending',
+        status: 1,
         createdAt: serverTimestamp(),
+        paymentMode: selected,
       });
       orderIdRef.current = orderSnapshot.id;
       if (selected === 'card') {
@@ -273,6 +288,10 @@ const Payment = () => {
             text="Pay now"
             style={styles.button}
           />
+          <Text style={{ marginTop: 15, color: theme.secondaryTextColor }}>
+            Note: Fake transaction for demo purpose only, don't add you card
+            details.
+          </Text>
         </ScrollView>
       </View>
       <Loader visible={loading} />

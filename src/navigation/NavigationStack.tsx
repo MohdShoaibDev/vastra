@@ -37,10 +37,11 @@ import Payment from '@screens/payment/payment/Payment';
 import NetInfo from '@react-native-community/netinfo';
 import { RootState } from '@redux/store/store';
 import AddCard from '@screens/payment/addCard/AddCard';
-import Addresses from '@screens/addresses/Addresses';
+import Addresses from '@screens/addresses/addresses/Addresses';
 import ManagePayment from '@screens/payment/managePayment/ManagePayment';
 import AddMoneyToWallet from '@screens/payment/wallet/AddMoneyToWallet';
 import { appcardsHandler } from '@redux/slice/cardsSlice';
+import AddAddress from '@screens/addresses/addAddress/AddAddress';
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
 
@@ -107,7 +108,7 @@ const NavigationStack = () => {
   }, []);
 
   useEffect(() => {
-    Promise.all([fetchUserDetails(), getCardList()]);
+    Promise.all([fetchUserDetails(), getCardList(), fetchAddresses()]);
     const unsubscribe = NetInfo.addEventListener(state => {
       if (state.isConnected && state.isInternetReachable) {
         setInternetIsConnected(true);
@@ -204,6 +205,32 @@ const NavigationStack = () => {
     }
   };
 
+  const fetchAddresses = async () => {
+    try {
+      const uid = auth.currentUser?.uid;
+      if (!uid) return;
+      setLoading(true);
+      const addressesRef = doc(getFirestore(), 'addresses', uid);
+      const document = await getDoc(addressesRef);
+      if (document?.data()?.addresses?.length > 0) {
+        const filterAddresses = document
+          ?.data()
+          ?.addresses?.filter(
+            (address: any) => address.active && address.default,
+          );
+        dispatch(
+          appUserDetailsHandler({
+            address: filterAddresses?.length > 0 ? filterAddresses[0] : {},
+          }),
+        );
+      }
+    } catch (err: any) {
+      console.log('getting error in fetching addresses', err?.message);
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return (
     <>
       {internetIsConnected && internetAccessible && (
@@ -269,6 +296,10 @@ const NavigationStack = () => {
                   <Stack.Screen
                     name={ScreenNames.Addresses}
                     component={Addresses}
+                  />
+                  <Stack.Screen
+                    name={ScreenNames.AddAddress}
+                    component={AddAddress}
                   />
                   <Stack.Screen
                     name={ScreenNames.ManagePayment}
