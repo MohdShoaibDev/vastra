@@ -112,7 +112,6 @@ const Profile = () => {
   };
 
   const tabHandler = (id: string) => {
-    console.log(id)
     switch (id) {
       case 'Cart':
         navigationHandler(ScreenNames.Cart);
@@ -186,6 +185,7 @@ const Profile = () => {
           ItemSeparatorComponent={() => <View style={styles.separator} />}
           showsVerticalScrollIndicator={false}
           contentContainerStyle={{ paddingBottom: 30 }}
+          bounces={false}
         />
       </View>
       {showThemeModal && (

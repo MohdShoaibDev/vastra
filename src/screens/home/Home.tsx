@@ -1,17 +1,9 @@
-import React, {
-  useCallback,
-  useEffect,
-  useMemo,
-  useRef,
-  useState,
-} from 'react';
-import { Text, FlatList, View, TouchableOpacity } from 'react-native';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
+import { Text, View, TouchableOpacity } from 'react-native';
 import { FlashList } from '@shopify/flash-list';
 import styles from '@screens/home/style';
 import SearchBar from '@components/searchBar/SearchBar';
-import BrandItem from '@components/item/BrandItem';
 import ProductCard from '@components/card/ProductCard';
-import SectionHeader from '@components/header/SectionHeader';
 import { useStatusBarHeight } from '@hooks/useStatusBarHeight';
 import useAppNavigation from '@hooks/useAppNavigation';
 import { ScreenNames } from '@utility/screenNames';
@@ -43,9 +35,11 @@ const Home = () => {
   const wishlistData = useSelector((state: RootState) => state.wishlistData);
   const user = useSelector((state: RootState) => state.user);
   const [productsData, setProductsData] = useState<Product[]>([]);
+  const [filtersData, setFilterData] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
   const wishlistIdsRef = useRef({});
   const wishlistDataRef = useRef<Product[]>([]);
+  const [searchText, setSearchText] = useState('');
 
   useEffect(() => {
     wishlistDataRef.current = wishlistData;
@@ -68,6 +62,7 @@ const Home = () => {
         };
       });
       setProductsData(docData);
+      setFilterData(docData);
     } catch (err: any) {
       console.log('error in getting products', err?.message);
     }
@@ -159,72 +154,67 @@ const Home = () => {
         />
       );
     },
-    [wishlistIds],
-  );
-
-  const brands = useMemo(() => {
-    const _products = [...new Set(productsData.map(item => item.brand))];
-    return _products.map(item => {
-      const splitArray = item.split(' ');
-      return splitArray
-        .reduce(
-          (acc, value) => acc + value[0].toUpperCase() + value.slice(1) + ' ',
-          '',
-        )
-        .trimEnd();
-    });
-  }, [productsData]);
-
-  const renderBrandItem = useCallback(
-    ({ item }: { item: any }) => <BrandItem name={item} />,
-    [],
+    [wishlistIds, handleWishlist],
   );
 
   const navigateToCartScreen = () => {
     navigation.navigate(ScreenNames.Cart);
   };
 
-  const Header = () => (
-    <View>
-      <View style={styles.topSectionContainer}>
-        <View>
-          <Text style={{ ...styles.hello, color: theme.mainTextColor }}>
-            Hello
-          </Text>
-          <Text style={{ ...styles.subtitle, color: theme.secondaryTextColor }}>
-            {`Welcome ${user.name}`}
-          </Text>
+  const searchHandler = (value: string) => {
+    setSearchText(value);
+    value.trim();
+    if (value === '') {
+      setFilterData(productsData);
+      return;
+    }
+    console.log({ value, productsData });
+    const searchData = productsData.filter(
+      (product: Product) =>
+        product.brand.toLowerCase().includes(value.toLowerCase()) ||
+        product.title.toLowerCase().includes(value.toLowerCase()),
+    );
+    console.log({ searchData, productsData });
+    setFilterData(searchData);
+  };
+
+  const Header = useCallback(
+    () => (
+      <View>
+        <View style={styles.topSectionContainer}>
+          <View>
+            <Text style={{ ...styles.hello, color: theme.mainTextColor }}>
+              Hello
+            </Text>
+            <Text
+              style={{ ...styles.subtitle, color: theme.secondaryTextColor }}
+            >
+              {`Welcome ${user.name}`}
+            </Text>
+          </View>
+          <TouchableOpacity activeOpacity={0.6} onPress={navigateToCartScreen}>
+            <Ionicons
+              name="cart-outline"
+              size={22}
+              color={theme.mainTextColor}
+            />
+          </TouchableOpacity>
         </View>
-        <TouchableOpacity activeOpacity={0.6} onPress={navigateToCartScreen}>
-          <Ionicons name="cart-outline" size={22} color={theme.mainTextColor} />
-        </TouchableOpacity>
+
+        <SearchBar
+          value={searchText}
+          onSearch={searchHandler}
+          style={{ marginBottom: 10 }}
+        />
       </View>
-
-      <SearchBar
-        onSearch={value => {
-          console.log('search:', value);
-        }}
-        style={{marginBottom: 10}}
-      />
-
-      {/* <SectionHeader title="Choose Brand" />
-
-      <FlatList
-        horizontal
-        data={brands}
-        keyExtractor={item => item}
-        renderItem={renderBrandItem}
-        showsHorizontalScrollIndicator={false}
-      /> */}
-
-      {/* <SectionHeader title="New Arrival" /> */}
-    </View>
+    ),
+    [user, searchHandler],
   );
 
   return (
     <>
       <FlashList
-        data={productsData}
+        data={filtersData}
         renderItem={renderItem}
         keyExtractor={item => item.id.toString()}
         numColumns={2}
@@ -235,6 +225,7 @@ const Home = () => {
           backgroundColor: theme.bgColor,
         }}
         showsVerticalScrollIndicator={false}
+        bounces={false}
       />
       <Loader visible={loading} />
     </>

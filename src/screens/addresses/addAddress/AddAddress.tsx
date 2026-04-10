@@ -7,7 +7,7 @@ import InputField from '@components/textfield/InputField';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import styles from '@screens/addresses/addAddress/styles';
 import IconButton from '@components/buttons/IconButton';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '@redux/store/store';
 import { commonColors } from '@utility/appColors';
 import {
@@ -19,6 +19,7 @@ import {
 } from '@react-native-firebase/firestore';
 import Loader from '@components/loader/Loader';
 import auth from 'src/firebase/auth';
+import { appUserDetailsHandler } from '@redux/slice/userSlice';
 
 const addressType = ['Home', 'Work', 'Other'];
 
@@ -26,6 +27,7 @@ const AddAddress = () => {
   const navigation = useNavigation();
   const route = useRoute();
   const id = route?.params?.id ?? null;
+  const dispatch = useDispatch();
   const isEditingDefaultAddress = useRef(false);
   const theme = useSelector((state: RootState) => state.theme);
   const [name, setName] = useState('');
@@ -72,6 +74,11 @@ const AddAddress = () => {
     }
   };
 
+  const defaultAddressHandler = (address: any) => {
+    delete address['createdAt'];
+    dispatch(appUserDetailsHandler(address));
+  };
+
   const handleSave = async () => {
     if (
       !name ||
@@ -113,6 +120,7 @@ const AddAddress = () => {
         await setDoc(addressesRef, {
           addresses: [{ id: 1, ...addressData }],
         });
+        defaultAddressHandler({ id: 1, ...addressData });
       } else {
         let previousAddresses = previousData?.addresses || [];
         if (defaultAddress) {
@@ -124,7 +132,11 @@ const AddAddress = () => {
         await updateDoc(addressesRef, {
           addresses: [
             ...previousAddresses,
-            { id: previousAddresses.length + 1, ...addressData },
+            {
+              id: allAddresses.data()?.addresses.length + 1,
+              ...addressData,
+              default: defaultAddress,
+            },
           ],
         });
       }

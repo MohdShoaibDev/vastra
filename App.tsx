@@ -10,6 +10,7 @@ import Toast, {
   BaseToast,
   ErrorToast,
   InfoToast,
+  SuccessToast,
 } from 'react-native-toast-message';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { useSelector } from 'react-redux';
@@ -19,7 +20,7 @@ import { StatusBar } from 'react-native';
 
 const toastConfig = {
   success: (props: any) => (
-    <BaseToast {...props} text1NumberOfLines={4} text2NumberOfLines={4} />
+    <SuccessToast {...props} text1NumberOfLines={4} text2NumberOfLines={4} />
   ),
   error: (props: any) => (
     <ErrorToast {...props} text1NumberOfLines={4} text2NumberOfLines={4} />

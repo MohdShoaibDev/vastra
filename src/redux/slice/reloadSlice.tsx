@@ -1,13 +1,13 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
 type ReloadType = {
-  cart: boolean;
   home: boolean;
   wishlist: boolean;
+  orders: boolean;
 };
 
 const initialState: ReloadType = {
-  cart: false,
+  orders: false,
   home: false,
   wishlist: false,
 };

@@ -39,10 +39,17 @@ const Login: React.FC = () => {
 
   const { control, handleSubmit, reset } = useForm<FormData>({
     defaultValues: {
-      email: 'shoaib@yopmail.com',
-      password: 'test@123',
+      email: '',
+      password: '',
     },
   });
+
+  // const { control, handleSubmit, reset } = useForm<FormData>({
+  //   defaultValues: {
+  //     email: 'shoaib@yopmail.com',
+  //     password: 'test@123',
+  //   },
+  // });
 
   useEffect(() => {
     focused && reset();

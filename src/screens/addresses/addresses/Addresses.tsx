@@ -87,10 +87,11 @@ const Addresses = () => {
       });
       const uid = auth.currentUser?.uid;
       if (!uid) return;
-      setLoading(true);
       const addressesRef = doc(getFirestore(), 'addresses', uid);
-      let defaultAddress = {};
-      const updatedAddresses: any = addresses.map((add: any) => {
+      const addressesRefData = await getDoc(addressesRef);
+      const _addresses = addressesRefData?.data()?.addresses;
+      let defaultAddress: any = {};
+      const updatedAddresses: any = _addresses.map((add: any) => {
         if (id === add.id) {
           defaultAddress = { ...add, default: true };
           return {
@@ -108,12 +109,53 @@ const Addresses = () => {
         addresses: updatedAddresses,
       });
       showToast('success', 'Address has been mark as default');
+      delete defaultAddress['createdAt'];
       dispatch(appUserDetailsHandler({ address: defaultAddress }));
       setAddresses(updatedAddresses);
     } catch (err: any) {
       console.log('getting error in updating address');
-    } finally {
-      setLoading(false);
+    }
+  };
+
+  const deleteAddressHandler = async () => {
+    try {
+      const id = showModal.id;
+      setShowModal({
+        visible: false,
+        id: null,
+      });
+      const checkIfAddressIsDefault: any = addresses.filter(
+        (add: any) => add.id === id,
+      );
+      if (checkIfAddressIsDefault[0]?.default) {
+        showToast('error', 'You cannot delete default address');
+        return;
+      }
+      const uid = auth.currentUser?.uid;
+      if (!uid) return;
+      const addressesRef = doc(getFirestore(), 'addresses', uid);
+      const addressesRefData = await getDoc(addressesRef);
+      const _addresses = addressesRefData?.data()?.addresses;
+      const updatedAddresses: any = _addresses.map((add: any) => {
+        if (id === add.id) {
+          return {
+            ...add,
+            active: false,
+          };
+        } else {
+          return add;
+        }
+      });
+      await updateDoc(addressesRef, {
+        addresses: updatedAddresses,
+      });
+      showToast('success', 'Address has been deleted successfully');
+      const addressesListData = updatedAddresses.filter(
+        (add: any) => add.active,
+      );
+      setAddresses(addressesListData);
+    } catch (err: any) {
+      console.log('getting error in updating address');
     }
   };
 
@@ -149,7 +191,7 @@ const Addresses = () => {
                 }
                 markAsDefault={address.default}
                 number={address.phone}
-                address={`${address.locality}, ${address.city}, ${address.pincode}, ${address.state}`}
+                address={`${address.locality}, ${address.city}, ${address.state} - ${address.pincode}`}
                 onPressMenu={modalHandler}
                 style={styles.addressCard}
               />
@@ -174,7 +216,7 @@ const Addresses = () => {
           });
         }}
         onDefault={markAsDefaultHandler}
-        onDelete={() => {}}
+        onDelete={deleteAddressHandler}
         onEdit={addressEditHandler}
       />
     </>

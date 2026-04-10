@@ -34,6 +34,7 @@ const Payment = () => {
   const theme = useSelector((state: RootState) => state.theme);
   const cards = useSelector((state: RootState) => state.cards);
   const user = useSelector((state: RootState) => state.user);
+  const reload = useSelector((state: RootState) => state.reload);
   const [selected, setSelected] = useState<'card' | 'wallet'>('card');
   const navigation = useAppNavigation();
   const param: any = useRoute().params;
@@ -74,6 +75,7 @@ const Payment = () => {
           size: latestSizeData,
         });
       });
+      dispatch(appReloadHandler({ orders: !reload.orders }));
     } catch (err: any) {
       console.log('getting error in updating inventory', err?.message);
     }
@@ -110,6 +112,7 @@ const Payment = () => {
         });
         dispatch(appUserDetailsHandler({ wallet: user.wallet - param.amount }));
       }
+      showToast('success', 'Order placed successfully');
       await updateInventory(snapshot.docs);
       navigation.reset({
         index: 0,
@@ -121,7 +124,7 @@ const Payment = () => {
       setLoading(false);
     }
   };
-
+  // status meaning: 1 -> pending, 2 -> processing, 3 -> in-transist, 4 -> delivered
   const createOrder = async () => {
     try {
       const uid = auth.currentUser?.uid;
@@ -140,6 +143,7 @@ const Payment = () => {
           quantity: doc.data().quantity,
           size: doc.data().size,
           productId: doc.id,
+          status: 1,
         }));
       }
       const orderRef = collection(getFirestore(), 'orders');
@@ -150,6 +154,9 @@ const Payment = () => {
         status: 1,
         createdAt: serverTimestamp(),
         paymentMode: selected,
+        addressId: user.address.id,
+        name: user.address.name,
+        deliveryFee: param.amount > 99 ? 0 : 19,
       });
       orderIdRef.current = orderSnapshot.id;
       if (selected === 'card') {

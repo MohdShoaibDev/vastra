@@ -14,9 +14,11 @@ import { RootState } from '@redux/store/store';
 import Header from '@components/header/Header';
 import Loader from '@components/loader/Loader';
 import {
+  collection,
   deleteDoc,
   doc,
   getDoc,
+  getDocs,
   getFirestore,
   serverTimestamp,
   setDoc,
@@ -26,21 +28,29 @@ import { useRoute } from '@react-navigation/native';
 import { showToast } from '@utility/helperMethod';
 import auth from 'src/firebase/auth';
 import { commonColors } from '@utility/appColors';
+import ReviewCard, { ReviewCardProps } from '@components/review/ReviewCard';
 import useAppNavigation from '@hooks/useAppNavigation';
+import { ScreenNames } from '@utility/screenNames';
 const sizes = ['s', 'm', 'l', 'xl', '2xl', '3xl'];
 
 const ProductDetails = () => {
   const theme = useSelector((state: RootState) => state.theme);
   const { id } = useRoute().params;
+  const navigation = useAppNavigation();
   const [productDetails, setProductDetails] = useState<Product | null>(null);
   const [selectedSize, setSelectedSize] = useState<string>('');
   const [productInCartData, setProductInCartData] = useState<any>({
     quantity: 0,
   });
+  const [reviews, setReviews] = useState<ReviewCardProps[] | null>(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    Promise.all([getProductDetails(), getProductFromCart()]).finally(() => {
+    Promise.all([
+      getProductDetails(),
+      getProductFromCart(),
+      getReviewList(),
+    ]).finally(() => {
       setLoading(false);
     });
   }, []);
@@ -69,6 +79,20 @@ const ProductDetails = () => {
       }
     } catch (err: any) {
       console.log('error in getting product details', err?.message);
+    }
+  };
+
+  const getReviewList = async () => {
+    try {
+      const snapshot = await getDocs(
+        collection(getFirestore(), 'products', id, 'reviews'),
+      );
+      if (snapshot.docs) {
+        const data = snapshot.docs?.map((doc: any) => ({ ...doc?.data() }));
+        setReviews(data);
+      }
+    } catch (err: any) {
+      console.log('error in getting product reviews', err?.message);
     }
   };
 
@@ -161,6 +185,12 @@ const ProductDetails = () => {
     });
   };
 
+  const navigateToReviewsScreen = () => {
+    navigation.navigate(ScreenNames.Reviews, {
+      productId: id,
+    });
+  };
+
   return (
     <View
       style={{
@@ -168,9 +198,9 @@ const ProductDetails = () => {
         backgroundColor: theme.bgColor,
       }}
     >
-      <Header title="" style={styles.header} />
       {productDetails && (
-        <ScrollView showsVerticalScrollIndicator={false}>
+        <ScrollView showsVerticalScrollIndicator={false} bounces={false}>
+          <Header title="" style={styles.header} />
           <FlatList
             pagingEnabled
             data={[1, 2, 3].map(_ => productDetails.image)}
@@ -226,48 +256,37 @@ const ProductDetails = () => {
             </Text>
           </View>
 
-          <View style={styles.reviewContainer}>
-            <View style={styles.reviewHeader}>
-              <Text
-                style={{ ...styles.sectionTitle, color: theme.mainTextColor }}
-              >
-                Reviews
-              </Text>
-              <Text style={styles.viewAll}>View All</Text>
-            </View>
-
-            <View style={styles.reviewCard}>
-              <Image
-                source={{
-                  uri: 'https://randomuser.me/api/portraits/men/32.jpg',
-                }}
-                style={styles.avatar}
-              />
-
-              <View style={{ flex: 1 }}>
+          {Array.isArray(reviews) && reviews.length > 0 && (
+            <View style={styles.reviewContainer}>
+              <View style={styles.reviewHeader}>
                 <Text
-                  style={{
-                    ...styles.reviewer,
-                    color: theme.secondaryTextColor,
-                  }}
+                  style={{ ...styles.sectionTitle, color: theme.mainTextColor }}
                 >
-                  Ronald Richards
+                  Reviews
                 </Text>
-                <Text
-                  style={{
-                    ...styles.reviewText,
-                    color: theme.secondaryTextColor,
-                  }}
+                <TouchableOpacity
+                  activeOpacity={0.6}
+                  onPress={navigateToReviewsScreen}
                 >
-                  Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-                </Text>
+                  <Text style={styles.viewAll}>View All</Text>
+                </TouchableOpacity>
               </View>
 
-              <Text style={{ ...styles.rating, color: theme.mainTextColor }}>
-                4.8 ⭐
-              </Text>
+              <ReviewCard
+                name={reviews[0].name}
+                review={reviews[0].review}
+                rating={reviews[0].rating}
+              />
             </View>
-          </View>
+          )}
+
+          {productDetails.reviewCount === 0 && (
+            <Text
+              style={{ ...styles.noReviewText, color: theme.mainTextColor }}
+            >
+              No Review
+            </Text>
+          )}
         </ScrollView>
       )}
 

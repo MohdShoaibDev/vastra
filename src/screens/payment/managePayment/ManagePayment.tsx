@@ -55,7 +55,7 @@ const ManagePayment = () => {
       setLoading(false);
     }
   };
-console.log(user)
+
   return (
     <>
       <View style={[styles.container, { backgroundColor: theme.bgColor }]}>

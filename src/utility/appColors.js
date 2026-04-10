@@ -7,7 +7,7 @@ const lightColors = {
   secondIconColor: 'gray',
   secondaryBgColor: 'white',
   textFieldBgColor: '#F1F3F6',
-  textFieldPlaceholderColor: '#999'
+  textFieldPlaceholderColor: '#999',
 };
 const darkColors = {
   card: '#1E1E1E',
@@ -18,7 +18,7 @@ const darkColors = {
   secondIconColor: '#EEF1F6',
   secondaryBgColor: '#1E1E1E',
   textFieldBgColor: '#1E1E1E',
-  textFieldPlaceholderColor: 'gray'
+  textFieldPlaceholderColor: 'gray',
 };
 const commonColors = {
   primaryTextColor: '#3B82F6',
@@ -30,6 +30,7 @@ const commonColors = {
   white: 'white',
   transparent: 'transparent',
   lightBlack: 'rgba(0,0,0,0.6)',
+  yellow: '#FFD700',
 };
 
 export { lightColors, darkColors, commonColors };

@@ -32,6 +32,7 @@ const Cart = () => {
   const navigation = useAppNavigation();
   const [items, setItems] = useState<any>([]);
   const [loading, setLoading] = useState(true);
+  const [showModal, setShowModal] = useState(false);
 
   useEffect(() => {
     focused && getProductFromCart();
@@ -144,139 +145,143 @@ const Cart = () => {
       amount: total + (total <= 99 ? 19 : 0),
     });
   };
-  console.log(user.address);
-  return (
-    <View style={{ ...styles.container, backgroundColor: theme.bgColor }}>
-      <ScrollView
-        style={styles.scrollview}
-        showsVerticalScrollIndicator={false}
-        bounces={false}
-        contentContainerStyle={styles.contentContainerStyle}
-      >
-        <Header title="Cart" showCart={false} style={styles.header} />
 
-        {user.address.id && (
-          <>
-            <View style={styles.deliveredToTextContainer}>
-              <Text
-                style={{
-                  ...styles.deliveredToText,
-                  color: theme.mainTextColor,
-                }}
-              >
-                Delivered to
-              </Text>
-              <TouchableOpacity>
+  const modalHandler = () => setShowModal(pre => !pre);
+  return (
+    <>
+      <View style={{ ...styles.container, backgroundColor: theme.bgColor }}>
+        <ScrollView
+          style={styles.scrollview}
+          showsVerticalScrollIndicator={false}
+          bounces={false}
+          contentContainerStyle={styles.contentContainerStyle}
+        >
+          <Header title="Cart" showCart={false} style={styles.header} />
+          {user.address.id && items.length > 0 && (
+            <>
+              <View style={styles.deliveredToTextContainer}>
                 <Text
                   style={{
                     ...styles.deliveredToText,
-                    textDecorationLine: 'underline',
-                    color: commonColors.primaryTextColor,
+                    color: theme.mainTextColor,
                   }}
                 >
-                  Change delivery address
+                  Delivered to
                 </Text>
-              </TouchableOpacity>
-            </View>
-            <AddressCard
-              id={user.address.id}
-              name={user.address.name}
-              type={
-                user.address?.type === 'Other'
-                  ? user.address.otherAddressType
-                  : user.address.type
-              }
-              markAsDefault={user.address.default}
-              number={user.address.phone}
-              address={`${user.address.locality}, ${user.address.city}, ${user.address.pincode}, ${user.address.state}`}
-              style={styles.addressCard}
-              showMenu={false}
-            />
-          </>
-        )}
-
-        {items.length > 0 && (
-          <>
-            {items.map((item: any) => (
-              <CartItem
-                key={item.id}
-                item={item}
-                onIncrease={() => increase(item)}
-                onDecrease={() => decrease(item)}
+                <TouchableOpacity onPress={modalHandler}>
+                  <Text
+                    style={{
+                      ...styles.deliveredToText,
+                      textDecorationLine: 'underline',
+                      color: commonColors.primaryTextColor,
+                    }}
+                  >
+                    Change delivery address
+                  </Text>
+                </TouchableOpacity>
+              </View>
+              <AddressCard
+                id={user.address.id}
+                name={user.address.name}
+                type={
+                  user.address?.type === 'Other'
+                    ? user.address.otherAddressType
+                    : user.address.type
+                }
+                markAsDefault={user.address.default}
+                number={user.address.phone}
+                address={`${user.address?.locality}, ${user.address?.city}, ${user.address?.state} - ${user.address?.pincode}`}
+                style={styles.addressCard}
+                showMenu={false}
               />
-            ))}
+            </>
+          )}
 
-            <View style={styles.deliveryBox}>
-              <Text
-                style={{
-                  ...styles.deliveryTitle,
-                  color: theme.mainTextColor,
-                }}
-              >
-                Delivery
-              </Text>
-              <Text style={styles.deliveryText}>
-                Orders above $99 have FREE shipping
-              </Text>
-            </View>
+          {items.length > 0 && (
+            <>
+              {items.map((item: any) => (
+                <CartItem
+                  key={item.id}
+                  item={item}
+                  onIncrease={() => increase(item)}
+                  onDecrease={() => decrease(item)}
+                />
+              ))}
 
-            <View
-              style={{ ...styles.totalRow, marginTop: 10, borderTopWidth: 0 }}
-            >
-              <Text
-                style={{ ...styles.totalLabel, color: theme.mainTextColor }}
-              >
-                SubTotal
-              </Text>
-              <Text
-                style={{ ...styles.totalValue, color: theme.mainTextColor }}
-              >
-                ${total}
-              </Text>
-            </View>
+              <View style={styles.deliveryBox}>
+                <Text
+                  style={{
+                    ...styles.deliveryTitle,
+                    color: theme.mainTextColor,
+                  }}
+                >
+                  Delivery
+                </Text>
+                <Text style={styles.deliveryText}>
+                  Orders above $99 have FREE shipping
+                </Text>
+              </View>
 
-            <View style={styles.totalRow}>
-              <Text
-                style={{ ...styles.totalLabel, color: theme.mainTextColor }}
+              <View
+                style={{ ...styles.totalRow, marginTop: 10, borderTopWidth: 0 }}
               >
-                Delivery fee
-              </Text>
-              <Text
-                style={{ ...styles.totalValue, color: theme.mainTextColor }}
-              >
-                ${total <= 99 ? 19 : 0}
-              </Text>
-            </View>
+                <Text
+                  style={{ ...styles.totalLabel, color: theme.mainTextColor }}
+                >
+                  SubTotal
+                </Text>
+                <Text
+                  style={{ ...styles.totalValue, color: theme.mainTextColor }}
+                >
+                  ${total}
+                </Text>
+              </View>
 
-            <View style={styles.totalRow}>
-              <Text
-                style={{ ...styles.totalLabel, color: theme.mainTextColor }}
-              >
-                Total
-              </Text>
-              <Text
-                style={{ ...styles.totalValue, color: theme.mainTextColor }}
-              >
-                ${total + (total <= 99 ? 19 : 0)}
-              </Text>
-            </View>
+              <View style={styles.totalRow}>
+                <Text
+                  style={{ ...styles.totalLabel, color: theme.mainTextColor }}
+                >
+                  Delivery fee
+                </Text>
+                <Text
+                  style={{ ...styles.totalValue, color: theme.mainTextColor }}
+                >
+                  ${total <= 99 ? 19 : 0}
+                </Text>
+              </View>
 
-            <IconButton
-              text="Place your order"
-              style={styles.nextBtn}
-              onPress={navigateToPaymentScreen}
-            />
-          </>
-        )}
-        {!loading && items.length === 0 && (
-          <Text style={{ ...styles.noDataFound, color: theme.mainTextColor }}>
-            Cart is empty
-          </Text>
-        )}
-      </ScrollView>
-      <Loader visible={loading} />
-      <ChangeDeliveryAddressModal visible={true} onClose={() => {}} />
-    </View>
+              <View style={styles.totalRow}>
+                <Text
+                  style={{ ...styles.totalLabel, color: theme.mainTextColor }}
+                >
+                  Total
+                </Text>
+                <Text
+                  style={{ ...styles.totalValue, color: theme.mainTextColor }}
+                >
+                  ${total + (total <= 99 ? 19 : 0)}
+                </Text>
+              </View>
+
+              <IconButton
+                text="Place your order"
+                style={styles.nextBtn}
+                onPress={navigateToPaymentScreen}
+              />
+            </>
+          )}
+          {!loading && items.length === 0 && (
+            <Text style={{ ...styles.noDataFound, color: theme.mainTextColor }}>
+              Cart is empty
+            </Text>
+          )}
+        </ScrollView>
+        <Loader visible={loading} />
+      </View>
+      {showModal && (
+        <ChangeDeliveryAddressModal visible={true} onClose={modalHandler} />
+      )}
+    </>
   );
 };
 

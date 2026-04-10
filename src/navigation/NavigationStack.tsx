@@ -12,7 +12,7 @@ import auth from 'src/firebase/auth';
 import Wishlist from '@screens/wishlist/Wishlist';
 import Cart from '@screens/cart/Cart';
 import Profile from '@screens/profile/Profile';
-import Orders from '@screens/orders/Orders';
+import Orders from '@screens/orders/orders/Orders';
 import TermsAndCondition from '@screens/termsAndConditions/TermsAndCondition';
 import Notifications from '@screens/notification/Notifications';
 import { useDispatch, useSelector } from 'react-redux';
@@ -42,6 +42,8 @@ import ManagePayment from '@screens/payment/managePayment/ManagePayment';
 import AddMoneyToWallet from '@screens/payment/wallet/AddMoneyToWallet';
 import { appcardsHandler } from '@redux/slice/cardsSlice';
 import AddAddress from '@screens/addresses/addAddress/AddAddress';
+import OrderDetails from '@screens/orders/orderDetails/OrderDetails';
+import Reviews from '@screens/reviews/Reviews';
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
 
@@ -218,11 +220,22 @@ const NavigationStack = () => {
           ?.addresses?.filter(
             (address: any) => address.active && address.default,
           );
-        dispatch(
-          appUserDetailsHandler({
-            address: filterAddresses?.length > 0 ? filterAddresses[0] : {},
-          }),
-        );
+        if (filterAddresses?.length > 0) {
+          dispatch(
+            appUserDetailsHandler({
+              address: {
+                id: filterAddresses[0]?.id,
+                name: filterAddresses[0]?.name,
+                phone: filterAddresses[0]?.phone,
+                locality: filterAddresses[0]?.locality,
+                city: filterAddresses[0]?.city,
+                pincode: filterAddresses[0]?.pincode,
+                state: filterAddresses[0]?.state,
+                default: filterAddresses[0]?.default,
+              },
+            }),
+          );
+        }
       }
     } catch (err: any) {
       console.log('getting error in fetching addresses', err?.message);
@@ -286,6 +299,10 @@ const NavigationStack = () => {
                   />
                   <Stack.Screen name={ScreenNames.Orders} component={Orders} />
                   <Stack.Screen
+                    name={ScreenNames.OrderDetails}
+                    component={OrderDetails}
+                  />
+                  <Stack.Screen
                     name={ScreenNames.TermsAndCondition}
                     component={TermsAndCondition}
                   />
@@ -304,6 +321,10 @@ const NavigationStack = () => {
                   <Stack.Screen
                     name={ScreenNames.ManagePayment}
                     component={ManagePayment}
+                  />
+                  <Stack.Screen
+                    name={ScreenNames.Reviews}
+                    component={Reviews}
                   />
                 </>
               )}

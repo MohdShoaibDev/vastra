@@ -11,7 +11,7 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useSelector } from 'react-redux';
 import { RootState } from '@redux/store/store';
 import { ThemeType } from '@redux/slice/themeSlice';
-import Orders from '@screens/orders/Orders';
+import Orders from '@screens/orders/orders/Orders';
 
 const Tab = createBottomTabNavigator();
 

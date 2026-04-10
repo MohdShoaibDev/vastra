@@ -129,6 +129,13 @@ export default StyleSheet.create({
     paddingHorizontal: 16,
   },
 
+  noReviewText: {
+    alignSelf: 'center',
+    marginTop: 25,
+    fontSize: 16,
+    fontWeight: '500',
+  },
+
   reviewHeader: {
     flexDirection: 'row',
     justifyContent: 'space-between',

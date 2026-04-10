@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import {
   View,
   TextInput,
@@ -15,11 +15,20 @@ import { RootState } from '@redux/store/store';
 interface SearchBarProps {
   onSearch: (text: string) => void;
   style?: ViewStyle;
+  value: string;
 }
 
-const SearchBar: React.FC<SearchBarProps> = ({ onSearch, style = {} }) => {
+const SearchBar: React.FC<SearchBarProps> = ({
+  value = '',
+  onSearch,
+  style = {},
+}) => {
   const theme = useSelector((state: RootState) => state.theme);
   const [search, setSearch] = useState('');
+
+  useEffect(() => {
+    setSearch(value);
+  }, []);
 
   const handleDebounce = () => {
     let timer: any;
@@ -29,9 +38,9 @@ const SearchBar: React.FC<SearchBarProps> = ({ onSearch, style = {} }) => {
       }
       timer = setTimeout(() => {
         if (onSearch) {
-          onSearch(text);
+          onSearch(text.trim());
         }
-      }, 300);
+      }, 400);
     };
   };
 
@@ -54,6 +63,7 @@ const SearchBar: React.FC<SearchBarProps> = ({ onSearch, style = {} }) => {
       <View style={{ ...styles.searchBox, backgroundColor: theme.card }}>
         <Feather name="search" size={20} color={commonColors.gray} />
         <TextInput
+          autoFocus={true}
           value={search}
           placeholder="Search..."
           placeholderTextColor={`${theme.secondaryTextColor}`}

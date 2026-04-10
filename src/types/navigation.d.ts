@@ -20,6 +20,10 @@ export type RootStackParamList = {
   [ScreenNames.ManagePayment]: undefined;
   [ScreenNames.AddMoneyToWallet]: { amount: number } | undefined;
   [ScreenNames.AddAddress]: { id: number } | undefined;
+  [ScreenNames.OrderDetails] = { orderId: string, productId: string };
+  [ScreenNames.Reviews]: {
+    productId: string;
+  };
 };
 
 export type AppNavigationProp = NativeStackNavigationProp<RootStackParamList>;

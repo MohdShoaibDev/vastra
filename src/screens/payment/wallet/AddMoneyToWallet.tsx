@@ -17,6 +17,7 @@ import { useRoute } from '@react-navigation/native';
 import auth from 'src/firebase/auth';
 import { doc, getFirestore, updateDoc } from '@react-native-firebase/firestore';
 import { appUserDetailsHandler } from '@redux/slice/userSlice';
+import ChangeDeliveryAddressModal from '@components/modal/ChangeDeliveryAddressModal';
 
 const PRESET_AMOUNTS = [100, 200, 500, 1000, 2000];
 
@@ -91,6 +92,7 @@ const AddMoneyToWallet = () => {
     <>
       <KeyboardAwareScrollView
         style={{ ...styles.container, backgroundColor: theme.bgColor }}
+        bounces={false}
       >
         <Header title="Add Money" showCart={false} />
 

@@ -99,6 +99,7 @@ const Wishlist = () => {
             Wishlist is empty
           </Text>
         }
+        bounces={false}
         showsVerticalScrollIndicator={false}
       />
     </>
