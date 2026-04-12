@@ -144,7 +144,6 @@ const NavigationStack = () => {
         const items = snapshot?.docs?.map((doc: any) => {
           count += doc.data().quantity;
           delete doc.data()['createdAt'];
-          console.log('shoaib', {...doc.data()});
           return {
             ...doc.data(),
             id: doc.id,

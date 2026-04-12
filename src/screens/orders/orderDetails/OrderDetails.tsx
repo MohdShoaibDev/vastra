@@ -5,7 +5,7 @@ import { RootState } from '@redux/store/store';
 import { useSelector } from 'react-redux';
 import styles from '@screens/orders/orderDetails/styles';
 import Loader from '@components/loader/Loader';
-import { showToast } from '@utility/helperMethod';
+import { showToast, toTitleCase } from '@utility/helperMethod';
 import auth from 'src/firebase/auth';
 import {
   doc,
@@ -18,6 +18,8 @@ import {
 import FastImage from 'react-native-fast-image';
 import RatingModal from '@components/modal/RatingModal';
 import { commonColors } from '@utility/appColors';
+import useAppNavigation from '@hooks/useAppNavigation';
+import { ScreenNames } from '@utility/screenNames';
 
 type OrderItem = {
   id: string;
@@ -26,6 +28,8 @@ type OrderItem = {
   quantity: number;
   image: string;
   size: string;
+  title: string;
+  brand: string;
 };
 
 type Address = {
@@ -51,6 +55,7 @@ type Order = {
 };
 
 const OrderDetails = ({ route }: any) => {
+  const navigation = useAppNavigation();
   const theme = useSelector((state: RootState) => state.theme);
   const user = useSelector((state: RootState) => state.user);
   const { orderId, productId, status }: any = route.params;
@@ -181,6 +186,10 @@ const OrderDetails = ({ route }: any) => {
 
   const reviewModalHandler = () => setShowModal(value => !value);
 
+  const navigateToProductDetails = () => {
+    navigation.navigate(ScreenNames.ProductDetails, { id: productId });
+  };
+
   return (
     <>
       <ScrollView
@@ -193,14 +202,19 @@ const OrderDetails = ({ route }: any) => {
         <Header title="Order Details" />
         {order?.id && (
           <>
-            <FastImage
-              source={{
-                uri: order.items.image,
-                priority: FastImage.priority.high,
-              }}
-              resizeMode={FastImage.resizeMode.cover}
-              style={styles.image}
-            />
+            <TouchableOpacity
+              onPress={navigateToProductDetails}
+              activeOpacity={0.6}
+            >
+              <FastImage
+                source={{
+                  uri: order.items.image,
+                  priority: FastImage.priority.high,
+                }}
+                resizeMode={FastImage.resizeMode.cover}
+                style={styles.image}
+              />
+            </TouchableOpacity>
 
             <TouchableOpacity
               onPress={reviewModalHandler}
@@ -227,6 +241,9 @@ const OrderDetails = ({ route }: any) => {
               </Text>
               <Text style={{ color: theme.mainTextColor }}>
                 Date: {order.date}
+              </Text>
+              <Text style={{ color: theme.mainTextColor }}>
+                Brand: {toTitleCase(order.items.brand)}
               </Text>
               <Text style={{ color: theme.mainTextColor }}>
                 Size: {order.items.size.toUpperCase()}

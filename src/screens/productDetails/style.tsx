@@ -22,11 +22,19 @@ export default StyleSheet.create({
     position: 'relative',
   },
 
-  totalRating:{
+  ratingContainer: {
     position: 'absolute',
-    left: getWidthRespectiveToScreen(4),
-    bottom: 20
+    bottom: 15,
+    left: 10,
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center',
+    paddingVertical: 3,
+    paddingHorizontal: 12,
+    borderRadius: 20,
   },
+
+  totalRating: {},
 
   thumbnailList: {
     paddingVertical: 10,

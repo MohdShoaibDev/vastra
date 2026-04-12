@@ -11,6 +11,7 @@ import { commonColors } from '@utility/appColors';
 import { useSelector } from 'react-redux';
 import { RootState } from '@redux/store/store';
 import { Product } from 'src/types/product';
+import { getWidthRespectiveToScreen } from '@utility/helperMethod';
 
 interface ProductCardProps {
   index: number;
@@ -66,24 +67,34 @@ const ProductCard: React.FC<ProductCardProps> = ({
         style={styles.container}
         onPress={onPressCardHandler}
       >
-        <FastImage
-          source={{ uri: item.image, priority:FastImage.priority.high }}
-          resizeMode={'contain'}
-          style={styles.image}
-        />
-
-        <TouchableOpacity
-          activeOpacity={0.7}
-          style={styles.heart}
-          onPress={wishlistHandler}
-        >
-          <AnimatedFeather
-            name="heart"
-            size={18}
-            color={isWishlist ? commonColors.red : commonColors.lightGray}
-            style={animatedStyle}
+        <View style={styles.imageContainer}>
+          <FastImage
+            source={{ uri: item.image, priority: FastImage.priority.high }}
+            resizeMode={'cover'}
+            style={styles.image}
           />
-        </TouchableOpacity>
+          {item.reviewCount > 0 && (
+            <View
+              style={{ ...styles.ratingContainer, backgroundColor: theme.card }}
+            >
+              <Text
+                style={{ ...styles.totalRating, color: theme.mainTextColor }}
+              >
+                {item.totalRating} ⭐
+              </Text>
+              <Text
+                style={{ ...styles.totalRating, color: commonColors.lightGray }}
+              >
+                {` | `}
+              </Text>
+              <Text
+                style={{ ...styles.totalRating, color: theme.mainTextColor }}
+              >
+                {item.reviewCount}
+              </Text>
+            </View>
+          )}
+        </View>
 
         <Text
           style={{ ...styles.title, color: theme.secondaryTextColor }}
@@ -92,9 +103,19 @@ const ProductCard: React.FC<ProductCardProps> = ({
           {item.title}
         </Text>
 
-        <Text style={{ ...styles.price, color: theme.mainTextColor }}>
-          ${item.price}
-        </Text>
+        <View style={styles.priceAndWishlistContainer}>
+          <Text style={{ ...styles.price, color: theme.mainTextColor }}>
+            ${item.price}
+          </Text>
+          <TouchableOpacity activeOpacity={0.7} onPress={wishlistHandler}>
+            <AnimatedFeather
+              name="heart"
+              size={18}
+              color={isWishlist ? commonColors.red : commonColors.lightGray}
+              style={animatedStyle}
+            />
+          </TouchableOpacity>
+        </View>
       </TouchableOpacity>
     </View>
   );
@@ -115,26 +136,45 @@ const styles = StyleSheet.create({
     flex: 1,
   },
 
+  imageContainer: {
+    position: 'relative',
+  },
+
   image: {
     width: '100%',
     height: 180,
     borderRadius: 14,
+    overflow: 'hidden',
   },
 
-  heart: {
+  ratingContainer: {
     position: 'absolute',
-    right: 12,
-    top: 10,
+    bottom: 7,
+    left: 7,
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center',
+    paddingVertical: 3,
+    paddingHorizontal: 12,
+    borderRadius: 20,
   },
+
+  totalRating: {},
 
   title: {
     marginTop: 8,
     fontSize: 14,
   },
 
+  priceAndWishlistContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginTop: 4,
+  },
+
   price: {
     fontWeight: '700',
-    marginTop: 4,
     fontSize: 16,
   },
 });

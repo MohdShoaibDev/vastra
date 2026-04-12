@@ -152,7 +152,8 @@ const ProductDetails = () => {
       );
       if (productInCartData.quantity === 0) {
         const _data = {
-          name: productDetails?.title,
+          brand: productDetails?.brand,
+          title: productDetails?.title,
           price: productDetails?.price,
           description: productDetails?.description,
           image: productDetails?.image || '',
@@ -236,9 +237,33 @@ const ProductDetails = () => {
               showsHorizontalScrollIndicator={false}
               style={styles.thumbnailList}
             />
-            <Text style={styles.totalRating}>
-              {productDetails.totalRating}({productDetails.reviewCount}) ⭐
-            </Text>
+            {productDetails?.reviewCount > 0 && (
+              <View
+                style={{
+                  ...styles.ratingContainer,
+                  backgroundColor: theme.card,
+                }}
+              >
+                <Text
+                  style={{ ...styles.totalRating, color: theme.mainTextColor }}
+                >
+                  {productDetails.totalRating} ⭐
+                </Text>
+                <Text
+                  style={{
+                    ...styles.totalRating,
+                    color: commonColors.lightGray,
+                  }}
+                >
+                  {` | `}
+                </Text>
+                <Text
+                  style={{ ...styles.totalRating, color: theme.mainTextColor }}
+                >
+                  {productDetails.reviewCount}
+                </Text>
+              </View>
+            )}
           </View>
 
           <View style={styles.infoContainer}>

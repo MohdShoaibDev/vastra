@@ -110,7 +110,15 @@ const Payment = () => {
         await updateDoc(doc(getFirestore(), 'users', auth.currentUser!.uid), {
           wallet: user.wallet - param.amount,
         });
-        dispatch(appUserDetailsHandler({ wallet: user.wallet - param.amount }));
+        dispatch(
+          appUserDetailsHandler({
+            wallet: user.wallet - param.amount,
+            cart: {
+              count: 0,
+              items: [],
+            },
+          }),
+        );
       }
       showToast('success', 'Order placed successfully');
       await updateInventory(snapshot.docs);
@@ -136,9 +144,10 @@ const Payment = () => {
       let items = [];
       if (snapshot?.docs.length > 0) {
         items = snapshot?.docs?.map((doc: any) => ({
+          brand: doc.data().brand,
           description: doc.data().description,
           image: doc.data().image,
-          name: doc.data().name,
+          title: doc.data().title,
           price: doc.data().price,
           quantity: doc.data().quantity,
           size: doc.data().size,

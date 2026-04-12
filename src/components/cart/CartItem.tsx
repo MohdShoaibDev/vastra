@@ -7,7 +7,7 @@ import { RootState } from '@redux/store/store';
 
 type CartItemType = {
   id: number;
-  name: string;
+  title: string;
   description: string;
   price: number;
   quantity: number;
@@ -35,7 +35,7 @@ const CartItem: React.FC<Props> = ({ item, onIncrease, onDecrease }) => {
           numberOfLines={1}
           style={{ ...styles.title, color: theme.mainTextColor }}
         >
-          {item.name}
+          {item.title}
         </Text>
         <Text
           numberOfLines={1}
@@ -82,7 +82,7 @@ export const styles = StyleSheet.create({
   },
   image: {
     width: 60,
-    height: 40,
+    height: 80,
     resizeMode: 'contain',
   },
   itemInfo: {

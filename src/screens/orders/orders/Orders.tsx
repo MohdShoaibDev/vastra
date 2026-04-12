@@ -10,6 +10,7 @@ import {
   collection,
   getDocs,
   getFirestore,
+  orderBy,
   query,
   where,
 } from '@react-native-firebase/firestore';
@@ -30,6 +31,7 @@ const Orders = () => {
       const uid = auth.currentUser?.uid;
       if (!uid) return;
       setLoading(true);
+
       const q = query(
         collection(getFirestore(), 'orders'),
         where('userId', '==', uid),
@@ -54,6 +56,9 @@ const Orders = () => {
             status: Math.floor(Math.random() * 4) + 1,
           });
         }
+      });
+      myOrders.sort((a: any, b: any) => {
+        return b.createdAt?.seconds - a.createdAt?.seconds;
       });
       setOrdersData(myOrders);
     } catch (err: any) {

@@ -7,6 +7,7 @@ import { StyleSheet, TouchableOpacity, View, Text } from 'react-native';
 import FastImage from 'react-native-fast-image';
 import { useSelector } from 'react-redux';
 import Feather from 'react-native-vector-icons/Feather';
+import { toTitleCase } from '@utility/helperMethod';
 
 type Order = {
   id: string;
@@ -16,9 +17,10 @@ type Order = {
     quantity: number;
     price: number;
     image: string;
-    name: string;
+    title: string;
     size: string;
     description: string;
+    brand: string;
   };
   value: number;
   status: number;
@@ -89,7 +91,7 @@ const OrderCard = ({ order }: { order: Order }) => {
             style={{ ...styles.orderId, color: theme.mainTextColor }}
             numberOfLines={1}
           >
-            {order.items.name}
+            {toTitleCase(order.items.brand)}
           </Text>
           <Text style={styles.name} numberOfLines={1}>
             {order.items.description}
