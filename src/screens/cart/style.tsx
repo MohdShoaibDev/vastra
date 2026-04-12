@@ -21,11 +21,19 @@ export const styles = StyleSheet.create({
   header: {
     marginBottom: 20,
   },
-  deliveredToTextContainer:{
+  deliveredToTextContainer: {
     flexDirection: 'row',
     justifyContent: 'flex-start',
     alignItems: 'center',
-    gap: 5
+    gap: 5,
+  },
+  addAddress: {
+    marginBottom: 10,
+  },
+  addAddressContainer: {
+    flexDirection: 'row',
+    justifyContent: 'flex-start',
+    gap:5
   },
   deliveredToText: {
     fontSize: 16,

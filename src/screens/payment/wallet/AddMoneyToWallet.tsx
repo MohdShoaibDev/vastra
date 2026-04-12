@@ -17,7 +17,6 @@ import { useRoute } from '@react-navigation/native';
 import auth from 'src/firebase/auth';
 import { doc, getFirestore, updateDoc } from '@react-native-firebase/firestore';
 import { appUserDetailsHandler } from '@redux/slice/userSlice';
-import ChangeDeliveryAddressModal from '@components/modal/ChangeDeliveryAddressModal';
 
 const PRESET_AMOUNTS = [100, 200, 500, 1000, 2000];
 
@@ -153,7 +152,11 @@ const AddMoneyToWallet = () => {
         ) : (
           <View style={styles.textBtnContainer}>
             {cards.length === 0 && (
-              <Text style={styles.noCardText}>No card added yet!</Text>
+              <Text
+                style={{ ...styles.noCardText, color: theme.mainTextColor }}
+              >
+                No card added yet!
+              </Text>
             )}
             <TouchableOpacity onPress={navigateToAddCardScreen}>
               <Text
@@ -174,7 +177,7 @@ const AddMoneyToWallet = () => {
           onPress={cvvModalHandler}
         />
         <Text style={{ marginTop: 15, color: theme.secondaryTextColor }}>
-          Note: Fake transaction for demo purpose only, don't add you card
+          Note: Fake transaction for demo purpose only, don't add your card
           details.
         </Text>
       </KeyboardAwareScrollView>

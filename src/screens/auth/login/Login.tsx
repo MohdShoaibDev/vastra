@@ -103,13 +103,20 @@ const Login: React.FC = () => {
   };
 
   return (
-    <>
+    <View
+      style={{
+        ...styles.container,
+        backgroundColor: theme.bgColor,
+      }}
+    >
       <KeyboardAwareScrollView
-        style={{
-          ...styles.container,
-          backgroundColor: theme.bgColor,
-        }}
         scrollEnabled={keyboardHeight > 0}
+        enableOnAndroid={true}
+        keyboardShouldPersistTaps="handled"
+        extraScrollHeight={50}
+        enableAutomaticScroll={true}
+        bounces={false}
+        showsVerticalScrollIndicator={false}
       >
         <Header
           title="Sign In"
@@ -233,7 +240,7 @@ const Login: React.FC = () => {
       </KeyboardAwareScrollView>
 
       <Loader visible={loader} />
-    </>
+    </View>
   );
 };
 

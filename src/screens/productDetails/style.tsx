@@ -18,6 +18,16 @@ export default StyleSheet.create({
     resizeMode: 'contain',
   },
 
+  flatlistContainer: {
+    position: 'relative',
+  },
+
+  totalRating:{
+    position: 'absolute',
+    left: getWidthRespectiveToScreen(4),
+    bottom: 20
+  },
+
   thumbnailList: {
     paddingVertical: 10,
     paddingLeft: 10,
@@ -131,7 +141,7 @@ export default StyleSheet.create({
 
   noReviewText: {
     alignSelf: 'center',
-    marginTop: 25,
+    marginVertical: 25,
     fontSize: 16,
     fontWeight: '500',
   },
@@ -181,8 +191,7 @@ export default StyleSheet.create({
   cartButton: {
     height: getHeightRespectiveToScreen(7),
     alignItems: 'center',
-    borderTopRightRadius: 0,
-    borderTopLeftRadius: 0,
+    borderRadius: 0,
   },
 
   cartText: {

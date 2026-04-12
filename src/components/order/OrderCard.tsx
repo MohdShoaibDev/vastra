@@ -57,6 +57,7 @@ const OrderCard = ({ order }: { order: Order }) => {
     navigation.navigate(ScreenNames.OrderDetails, {
       orderId: order.id,
       productId: order.items.productId,
+      status: orderStatusTextForm,
     });
   };
 

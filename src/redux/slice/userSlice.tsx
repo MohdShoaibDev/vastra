@@ -1,4 +1,5 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
+import { Product } from 'src/types/product';
 
 type userType = {
   name: string;
@@ -15,6 +16,10 @@ type userType = {
     pincode: string;
     state: string;
     default: boolean;
+  };
+  cart: {
+    count: number;
+    items: Product[];
   };
 };
 
@@ -33,6 +38,10 @@ const initialState: userType = {
     pincode: '',
     state: '',
     default: false,
+  },
+  cart: {
+    count: 0,
+    items: [],
   },
 };
 

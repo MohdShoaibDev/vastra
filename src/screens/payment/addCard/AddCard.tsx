@@ -24,7 +24,6 @@ const AddCard = () => {
   const [name, setName] = useState('');
   const [number, setNumber] = useState('');
   const [expiry, setExpiry] = useState('');
-  const [cvv, setCvv] = useState('');
   const [loading, setLoading] = useState(false);
 
   const handleAddCard = async () => {
@@ -80,7 +79,6 @@ const AddCard = () => {
       setName('');
       setNumber('');
       setExpiry('');
-      setCvv('');
     } catch (err: any) {
       showToast('error', 'Something went wrong');
       console.log('getting error in adding card', err?.message);
@@ -109,9 +107,16 @@ const AddCard = () => {
   return (
     <>
       <View style={{ ...styles.container, backgroundColor: theme.bgColor }}>
-        <Header title="Add Card" showCart={false} />
+        <KeyboardAwareScrollView
+          enableOnAndroid={true}
+          keyboardShouldPersistTaps="handled"
+          extraScrollHeight={50}
+          enableAutomaticScroll={true}
+          bounces={false}
+          showsVerticalScrollIndicator={false}
+        >
+          <Header title="Add Card" showCart={false} />
 
-        <KeyboardAwareScrollView bounces={false}>
           <View style={styles.cardView}>
             <DebitCard name={name} number={number} expiry={expiry} />
           </View>
@@ -123,7 +128,6 @@ const AddCard = () => {
               onChangeText={setName}
               maxLength={20}
             />
-
             <InputField
               placeholder="Card Number"
               value={number}
@@ -141,16 +145,6 @@ const AddCard = () => {
                   maxLength={5}
                 />
               </View>
-
-              {/* <View style={[styles.inputHalf, styles.rightGap]}>
-                <InputField
-                  placeholder="CVV"
-                  value={cvv}
-                  onChangeText={setCvv}
-                  keyboardType="numeric"
-                  maxLength={3}
-                />
-              </View> */}
             </View>
           </View>
 

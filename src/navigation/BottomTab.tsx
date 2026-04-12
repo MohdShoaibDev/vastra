@@ -1,5 +1,4 @@
 import React from 'react';
-import { Platform, StyleSheet } from 'react-native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import Home from '@screens/home/Home';
 import { ScreenNames } from '@utility/screenNames';
@@ -7,7 +6,6 @@ import Icon from 'react-native-vector-icons/Feather';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import Wishlist from '@screens/wishlist/Wishlist';
 import Profile from '@screens/profile/Profile';
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useSelector } from 'react-redux';
 import { RootState } from '@redux/store/store';
 import { ThemeType } from '@redux/slice/themeSlice';
@@ -16,14 +14,13 @@ import Orders from '@screens/orders/orders/Orders';
 const Tab = createBottomTabNavigator();
 
 const BottomTab = () => {
-  const insets = useSafeAreaInsets();
   const theme = useSelector((state: RootState) => state.theme) as ThemeType;
   return (
     <Tab.Navigator
       screenOptions={{
         headerShown: false,
         tabBarStyle: {
-          height: Platform.OS === 'android' ? insets.bottom + 60 : 75,
+          height: 75,
           paddingTop: 7,
           borderTopLeftRadius: 30,
           borderTopRightRadius: 30,
@@ -70,9 +67,5 @@ const BottomTab = () => {
     </Tab.Navigator>
   );
 };
-
-const styles = StyleSheet.create({
-  container: {},
-});
 
 export default BottomTab;

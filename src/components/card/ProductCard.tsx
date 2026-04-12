@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, Image } from 'react-native';
 import Feather from 'react-native-vector-icons/Feather';
 import Animated, {
   useSharedValue,
@@ -67,8 +67,8 @@ const ProductCard: React.FC<ProductCardProps> = ({
         onPress={onPressCardHandler}
       >
         <FastImage
-          source={{ uri: item.image, priority: FastImage.priority.high }}
-          resizeMode={FastImage.resizeMode.contain}
+          source={{ uri: item.image, priority:FastImage.priority.high }}
+          resizeMode={'contain'}
           style={styles.image}
         />
 
@@ -107,7 +107,7 @@ const styles = StyleSheet.create({
     flex: 1,
     padding: 8,
     marginBottom: 10,
-    height: 280,
+    height: 270,
     borderRadius: 10,
   },
 
@@ -117,13 +117,13 @@ const styles = StyleSheet.create({
 
   image: {
     width: '100%',
-    height: 200,
+    height: 180,
     borderRadius: 14,
   },
 
   heart: {
     position: 'absolute',
-    right: 10,
+    right: 12,
     top: 10,
   },
 

@@ -53,13 +53,14 @@ type Order = {
 const OrderDetails = ({ route }: any) => {
   const theme = useSelector((state: RootState) => state.theme);
   const user = useSelector((state: RootState) => state.user);
-  const { orderId, productId }: any = route.params;
+  const { orderId, productId, status }: any = route.params;
   const [order, setOrder] = useState<null | Order>(null);
+  const [productReviewSnapshot, setProductReviewSnapshot] = useState<any>(null);
   const [loading, setLoading] = useState(false);
   const [showModal, setShowModal] = useState(false);
 
   useEffect(() => {
-    getProductDetails();
+    Promise.all([getProductDetails(), getOwnReview()]);
   }, []);
 
   const getProductDetails = async () => {
@@ -95,19 +96,23 @@ const OrderDetails = ({ route }: any) => {
     }
   };
 
-  const orderStatusTextForm = useCallback(
-    (status: number) => {
-      switch (status) {
-        case 1:
-          return 'processing';
-        case 2:
-          return 'in transit';
-        default:
-          return 'delivered';
-      }
-    },
-    [order?.status],
-  );
+  const getOwnReview = async () => {
+    try {
+      const uid = auth.currentUser?.uid;
+      if (!uid) return;
+      const productReviewRef = doc(
+        getFirestore(),
+        'products',
+        productId,
+        'reviews',
+        uid,
+      );
+      const productReviewSnapshot = await getDoc(productReviewRef);
+      setProductReviewSnapshot(productReviewSnapshot);
+    } catch (err: any) {
+      console.log('error getting productReviewSnapshot', err?.message);
+    }
+  };
 
   const reviewHandler = async (data: { rating: number; review: string }) => {
     try {
@@ -126,16 +131,19 @@ const OrderDetails = ({ route }: any) => {
 
       const productReviewRef = doc(db, 'products', productId, 'reviews', uid);
 
-      const productReviewSnapshot = await getDoc(productReviewRef);
-
       const totalRating = product?.totalRating || 0;
       const reviewCount = product?.reviewCount || 0;
 
       if (productReviewSnapshot.exists()) {
         const oldRating = productReviewSnapshot.data()?.rating || 0;
+        const _data: any = { rating: data.rating };
+
+        if (data.review) {
+          _data['review'] = data.review;
+        }
 
         await updateDoc(productReviewRef, {
-          ...data,
+          ..._data,
           updatedAt: serverTimestamp(),
         });
 
@@ -161,7 +169,7 @@ const OrderDetails = ({ route }: any) => {
           totalRating: Number(newAvg.toFixed(1)),
           reviewCount: newCount,
         });
-        showToast('success', 'Review updated successfully');
+        showToast('success', 'Review added successfully');
       }
     } catch (err: any) {
       showToast('error', 'Writing review failed');
@@ -204,7 +212,7 @@ const OrderDetails = ({ route }: any) => {
                   color: commonColors.primaryTextColor,
                 }}
               >
-                Write Review
+                {productReviewSnapshot.exists() ? 'Update' : 'Write'} Review
               </Text>
             </TouchableOpacity>
 
@@ -227,7 +235,7 @@ const OrderDetails = ({ route }: any) => {
                 Quantity: {order.items.quantity}
               </Text>
               <Text style={{ color: theme.mainTextColor }}>
-                Status: {orderStatusTextForm(order.status)}
+                Status: {status}
               </Text>
             </View>
 

@@ -25,6 +25,7 @@ import { Product } from 'src/types/product';
 import { appWishlistIdsHandler } from '@redux/slice/wishlistIdsSlice';
 import { appWishlistDataHandler } from '@redux/slice/wishlistDataSlice';
 import Ionicons from 'react-native-vector-icons/Ionicons';
+import { commonColors } from '@utility/appColors';
 
 const Home = () => {
   const theme = useSelector((state: RootState) => state.theme);
@@ -36,7 +37,7 @@ const Home = () => {
   const user = useSelector((state: RootState) => state.user);
   const [productsData, setProductsData] = useState<Product[]>([]);
   const [filtersData, setFilterData] = useState<Product[]>([]);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
   const wishlistIdsRef = useRef({});
   const wishlistDataRef = useRef<Product[]>([]);
   const [searchText, setSearchText] = useState('');
@@ -47,13 +48,12 @@ const Home = () => {
   }, [wishlistData, wishlistIds]);
 
   useEffect(() => {
-    fetchProducts().finally(() => {
-      setLoading(false);
-    });
+    fetchProducts();
   }, []);
 
   const fetchProducts = async () => {
     try {
+      setLoading(true);
       const snapshot = await getDocs(collection(getFirestore(), 'products'));
       const docData = snapshot.docs.map((doc: any) => {
         return {
@@ -65,6 +65,8 @@ const Home = () => {
       setFilterData(docData);
     } catch (err: any) {
       console.log('error in getting products', err?.message);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -147,7 +149,7 @@ const Home = () => {
       return (
         <ProductCard
           item={item}
-          index={item.id}
+          index={index}
           isWishlist={wishlistIds[item.id]}
           onPressWishList={handleWishlist}
           onPressCard={navigateToProductDetails}
@@ -163,19 +165,24 @@ const Home = () => {
 
   const searchHandler = (value: string) => {
     setSearchText(value);
+    setLoading(true);
     value.trim();
     if (value === '') {
-      setFilterData(productsData);
+      setTimeout(() => {
+        setLoading(false);
+        setFilterData(productsData);
+      }, 1500);
       return;
     }
-    console.log({ value, productsData });
     const searchData = productsData.filter(
       (product: Product) =>
         product.brand.toLowerCase().includes(value.toLowerCase()) ||
         product.title.toLowerCase().includes(value.toLowerCase()),
     );
-    console.log({ searchData, productsData });
-    setFilterData(searchData);
+    setTimeout(() => {
+      setLoading(false);
+      setFilterData(searchData);
+    }, 1500);
   };
 
   const Header = useCallback(
@@ -192,12 +199,21 @@ const Home = () => {
               {`Welcome ${user.name}`}
             </Text>
           </View>
-          <TouchableOpacity activeOpacity={0.6} onPress={navigateToCartScreen}>
+          <TouchableOpacity
+            activeOpacity={0.6}
+            onPress={navigateToCartScreen}
+            style={styles.cartTouch}
+          >
             <Ionicons
               name="cart-outline"
               size={22}
-              color={theme.mainTextColor}
+              color={
+                user.cart.count
+                  ? commonColors.primaryTextColor
+                  : theme.mainTextColor
+              }
             />
+            {user.cart.count > 0 && <View style={styles.dot} />}
           </TouchableOpacity>
         </View>
 
@@ -225,7 +241,8 @@ const Home = () => {
           backgroundColor: theme.bgColor,
         }}
         showsVerticalScrollIndicator={false}
-        bounces={false}
+        refreshing={loading}
+        onRefresh={fetchProducts}
       />
       <Loader visible={loading} />
     </>

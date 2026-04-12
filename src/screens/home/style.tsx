@@ -13,6 +13,20 @@ export default StyleSheet.create({
     fontWeight: '700',
   },
 
+  cartTouch: {
+    position: 'relative',
+  },
+
+  dot: {
+    position: 'absolute',
+    right: 0,
+    top: -7,
+    height: 10,
+    width: 10,
+    borderRadius: 5,
+    backgroundColor: commonColors.primaryTextColor,
+  },
+
   subtitle: {
     color: commonColors.gray,
     fontSize: 16,

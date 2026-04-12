@@ -17,7 +17,7 @@ import TermsAndCondition from '@screens/termsAndConditions/TermsAndCondition';
 import Notifications from '@screens/notification/Notifications';
 import { useDispatch, useSelector } from 'react-redux';
 import { showToast, storage } from '@utility/helperMethod';
-import { Appearance, StyleSheet, Text, View } from 'react-native';
+import { Appearance, Platform, StyleSheet, Text, View } from 'react-native';
 import { appThemeHandler } from '@redux/slice/themeSlice';
 import { commonColors, darkColors, lightColors } from '@utility/appColors';
 import {
@@ -44,11 +44,13 @@ import { appcardsHandler } from '@redux/slice/cardsSlice';
 import AddAddress from '@screens/addresses/addAddress/AddAddress';
 import OrderDetails from '@screens/orders/orderDetails/OrderDetails';
 import Reviews from '@screens/reviews/Reviews';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
 
 const NavigationStack = () => {
   const dispatch = useDispatch();
+  const insets = useSafeAreaInsets();
   const theme = useSelector((state: RootState) => state.theme);
   const [loading, setLoading] = useState(true);
   const [isAuth, setIsAuth] = useState(false);
@@ -90,9 +92,12 @@ const NavigationStack = () => {
       setTimeout(() => setLoading(false), 2500);
       if (auth.currentUser?.uid) {
         try {
-          const wishlistIds = await getWishlistIds(auth.currentUser?.uid);
-          if (Array.isArray(wishlistIds) && wishlistIds.length > 0) {
-            fetchWishlist(wishlistIds);
+          const result: any[] = await Promise.all([
+            getWishlistIds(auth.currentUser?.uid),
+            getProductFromCart(),
+          ]);
+          if (Array.isArray(result[0]) && result[0].length > 0) {
+            fetchWishlist(result[0]);
           }
         } catch (err: any) {
           console.log(
@@ -126,6 +131,40 @@ const NavigationStack = () => {
 
     return () => unsubscribe();
   }, []);
+
+  const getProductFromCart = async () => {
+    try {
+      setLoading(true);
+      if (!auth.currentUser?.uid) return;
+      const snapshot = await getDocs(
+        collection(getFirestore(), 'users', auth.currentUser?.uid, 'cart'),
+      );
+      if (snapshot?.docs.length > 0) {
+        let count = 0;
+        const items = snapshot?.docs?.map((doc: any) => {
+          count += doc.data().quantity;
+          delete doc.data()['createdAt'];
+          console.log('shoaib', {...doc.data()});
+          return {
+            ...doc.data(),
+            id: doc.id,
+          };
+        });
+        dispatch(
+          appUserDetailsHandler({
+            cart: {
+              count,
+              items,
+            },
+          }),
+        );
+      }
+    } catch (err: any) {
+      console.log('error in getting item from cart', err?.message);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const getWishlistIds = async (uid: string) => {
     try {
@@ -240,7 +279,9 @@ const NavigationStack = () => {
     } catch (err: any) {
       console.log('getting error in fetching addresses', err?.message);
     } finally {
-      setLoading(false);
+      setTimeout(() => {
+        setLoading(false);
+      }, 2500);
     }
   };
 
@@ -251,6 +292,9 @@ const NavigationStack = () => {
           screenOptions={{
             headerShown: false,
             gestureEnabled: false,
+            contentStyle: {
+              paddingBottom: Platform.OS === 'android' ? insets.bottom : 0,
+            },
           }}
         >
           {loading && (

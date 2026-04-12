@@ -1384,7 +1384,7 @@ PODS:
     - nanopb/encode (= 3.30910.0)
   - nanopb/decode (3.30910.0)
   - nanopb/encode (3.30910.0)
-  - NitroMmkv (4.3.0):
+  - NitroMmkv (4.3.1):
     - boost
     - DoubleConversion
     - fast_float
@@ -1415,7 +1415,7 @@ PODS:
     - ReactCommon/turbomodule/core
     - SocketRocket
     - Yoga
-  - NitroModules (0.35.3):
+  - NitroModules (0.35.4):
     - boost
     - DoubleConversion
     - fast_float
@@ -4700,8 +4700,8 @@ SPEC CHECKSUMS:
   libwebp: 02b23773aedb6ff1fd38cec7a77b81414c6842a8
   MMKVCore: 3d16ce9f7d411e135020915fde98a056859a1efa
   nanopb: fad817b59e0457d11a5dfbde799381cd727c1275
-  NitroMmkv: d5d6bea7b502ac15baab67337fc308b11897e525
-  NitroModules: a02f3e69b694eedf74b19746483a4f5b267fc631
+  NitroMmkv: 26af4d1d45d1fae342de97547dcc1a8a7965b9b4
+  NitroModules: 64b7230f6d83396ab68171df53add48829ea9dbf
   RCT-Folly: 59ec0ac1f2f39672a0c6e6cecdd39383b764646f
   RCTDeprecation: a41bbdd9af30bf2e5715796b313e44ec43eefff1
   RCTRequired: 7be34aabb0b77c3cefe644528df0fa0afad4e4d0

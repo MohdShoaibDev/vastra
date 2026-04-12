@@ -1,22 +1,20 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { View, Text, TouchableOpacity, ScrollView } from 'react-native';
 import { styles } from '@screens/cart/style';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '@redux/store/store';
 import CartItem from '@components/cart/CartItem';
 import Loader from '@components/loader/Loader';
 import {
-  collection,
+  count,
   deleteDoc,
   doc,
-  getDocs,
   getFirestore,
   updateDoc,
 } from '@react-native-firebase/firestore';
 import auth from 'src/firebase/auth';
 import { Product } from 'src/types/product';
 import { showToast } from '@utility/helperMethod';
-import { useIsFocused } from '@react-navigation/native';
 import useAppNavigation from '@hooks/useAppNavigation';
 import { ScreenNames } from '@utility/screenNames';
 import IconButton from '@components/buttons/IconButton';
@@ -24,43 +22,15 @@ import Header from '@components/header/Header';
 import AddressCard from '@components/address/AddressCard';
 import { commonColors } from '@utility/appColors';
 import ChangeDeliveryAddressModal from '@components/modal/ChangeDeliveryAddressModal';
+import { appUserDetailsHandler } from '@redux/slice/userSlice';
 
 const Cart = () => {
   const theme = useSelector((state: RootState) => state.theme);
   const user = useSelector((state: RootState) => state.user);
-  const focused = useIsFocused();
+  const dispatch = useDispatch();
   const navigation = useAppNavigation();
-  const [items, setItems] = useState<any>([]);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
   const [showModal, setShowModal] = useState(false);
-
-  useEffect(() => {
-    focused && getProductFromCart();
-  }, [focused]);
-
-  const getProductFromCart = async () => {
-    try {
-      setLoading(true);
-      if (!auth.currentUser?.uid) return;
-      const snapshot = await getDocs(
-        collection(getFirestore(), 'users', auth.currentUser?.uid, 'cart'),
-      );
-      if (snapshot?.docs.length > 0) {
-        setItems(
-          snapshot?.docs?.map((doc: any) => ({
-            ...doc.data(),
-            id: doc.id,
-          })),
-        );
-      } else {
-        setItems([]);
-      }
-    } catch (err: any) {
-      console.log('error in getting item from cart', err?.message);
-    } finally {
-      setLoading(false);
-    }
-  };
 
   const productCartHandler = async (id: string, quantity: number) => {
     try {
@@ -105,12 +75,22 @@ const Cart = () => {
         );
         return;
       }
-      setItems((prev: any) =>
-        prev.map((i: any) =>
-          i.id === id ? { ...i, quantity: i.quantity + 1 } : i,
-        ),
-      );
       await productCartHandler(id, quantity + 1);
+      const mappedData = user.cart.items.map((prod: Product) => {
+        if (id === prod.id) {
+          return {
+            ...prod,
+            quantity: prod.quantity + 1,
+          };
+        } else {
+          return prod;
+        }
+      });
+      dispatch(
+        appUserDetailsHandler({
+          cart: { count: user.cart.count + 1, items: mappedData },
+        }),
+      );
     } catch (err: any) {
       console.log('getting error in increasing qunatity', err?.message);
     }
@@ -118,29 +98,55 @@ const Cart = () => {
 
   const decrease = async ({ id, quantity }: Product) => {
     try {
-      if (quantity - 1 === 0) {
-        const filterData = items.filter((item: Product) => item.id != id);
-        setItems(filterData);
-      }
       await productCartHandler(id, quantity - 1);
-      setItems((prev: any) =>
-        prev.map((i: any) =>
-          i.id === id && i.quantity > 1
-            ? { ...i, quantity: i.quantity - 1 }
-            : i,
-        ),
-      );
+      if (quantity - 1 === 0) {
+        const filterData = user.cart.items.filter(
+          (item: Product) => item.id != id,
+        );
+        dispatch(
+          appUserDetailsHandler({
+            cart: {
+              count: user.cart.count - 1,
+              items: filterData,
+            },
+          }),
+        );
+      } else {
+        const mappedData = user.cart.items.map((item: Product) => {
+          if (item.id === id) {
+            return { ...item, quantity: item.quantity - 1 };
+          } else {
+            return item;
+          }
+        });
+        dispatch(
+          appUserDetailsHandler({
+            cart: {
+              count: user.cart.count - 1,
+              items: mappedData,
+            },
+          }),
+        );
+      }
     } catch (err: any) {
       console.log('getting error in decreasing qunatity', err?.message);
     }
   };
 
-  const total = items.reduce(
+  const total = user.cart.items.reduce(
     (sum: number, i: any) => sum + i.price * i.quantity,
     0,
   );
 
+  const navigateToAddAddressScreen = () => {
+    navigation.navigate(ScreenNames.AddAddress);
+  };
+
   const navigateToPaymentScreen = () => {
+    if (!user.address.id) {
+      showToast('info', 'No delivery address found, add now');
+      return;
+    }
     navigation.navigate(ScreenNames.Payment, {
       amount: total + (total <= 99 ? 19 : 0),
     });
@@ -157,7 +163,7 @@ const Cart = () => {
           contentContainerStyle={styles.contentContainerStyle}
         >
           <Header title="Cart" showCart={false} style={styles.header} />
-          {user.address.id && items.length > 0 && (
+          {user.address.id && user.cart.count > 0 && (
             <>
               <View style={styles.deliveredToTextContainer}>
                 <Text
@@ -197,9 +203,37 @@ const Cart = () => {
             </>
           )}
 
-          {items.length > 0 && (
+          {!user.address.id && user.cart.count > 0 && (
+            <View style={styles.addAddressContainer}>
+              <Text
+                style={{
+                  ...styles.deliveredToText,
+                  fontWeight: '400',
+                  color: theme.mainTextColor,
+                }}
+              >
+                No address found:
+              </Text>
+              <TouchableOpacity
+                style={styles.addAddress}
+                onPress={navigateToAddAddressScreen}
+              >
+                <Text
+                  style={{
+                    ...styles.deliveredToText,
+                    color: commonColors.primaryTextColor,
+                    textDecorationLine: 'underline',
+                  }}
+                >
+                  Add address
+                </Text>
+              </TouchableOpacity>
+            </View>
+          )}
+
+          {user.cart.count > 0 && (
             <>
-              {items.map((item: any) => (
+              {user.cart.items.map((item: any) => (
                 <CartItem
                   key={item.id}
                   item={item}
@@ -270,7 +304,7 @@ const Cart = () => {
               />
             </>
           )}
-          {!loading && items.length === 0 && (
+          {!loading && user.cart.count === 0 && (
             <Text style={{ ...styles.noDataFound, color: theme.mainTextColor }}>
               Cart is empty
             </Text>

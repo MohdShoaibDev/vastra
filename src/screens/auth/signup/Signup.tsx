@@ -79,7 +79,7 @@ const Signup: React.FC = () => {
       );
     } catch (err: any) {
       console.log('error in signup', err?.message);
-      showToast('error', err?.message || 'Something went wrong')
+      showToast('error', err?.message || 'Something went wrong');
     } finally {
       setLoader(false);
     }
@@ -109,13 +109,20 @@ const Signup: React.FC = () => {
   };
 
   return (
-    <>
+    <View
+      style={{
+        ...styles.container,
+        backgroundColor: theme.bgColor,
+      }}
+    >
       <KeyboardAwareScrollView
-        style={{
-          ...styles.container,
-          backgroundColor: theme.bgColor,
-        }}
         scrollEnabled={keyboardHeight > 0}
+        enableOnAndroid={true}
+        keyboardShouldPersistTaps="handled"
+        extraScrollHeight={50}
+        enableAutomaticScroll={true}
+        bounces={false}
+        showsVerticalScrollIndicator={false}
       >
         <Header
           title="Sign up"
@@ -276,7 +283,7 @@ const Signup: React.FC = () => {
       </KeyboardAwareScrollView>
 
       <Loader visible={loader} />
-    </>
+    </View>
   );
 };
 

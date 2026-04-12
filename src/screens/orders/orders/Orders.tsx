@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useState } from 'react';
-import { View, FlatList } from 'react-native';
+import { View, FlatList, Text } from 'react-native';
 import styles from '@screens/orders/orders/style';
 import Header from '@components/header/Header';
 import { useSelector } from 'react-redux';
@@ -63,15 +63,27 @@ const Orders = () => {
     }
   };
 
-  const OrderHeader = () => (
-    <View style={styles.topSection}>
-      <Header title="Orders" showBack={false} style={styles.header} />
-    </View>
+  const OrderHeader = useCallback(
+    () => (
+      <View style={styles.topSection}>
+        <Header title="Orders" showBack={false} style={styles.header} />
+      </View>
+    ),
+    [],
+  );
+
+  const OrderEmptyComponent = useCallback(
+    () => (
+      <Text style={{ ...styles.noOrdersText, color: theme.mainTextColor }}>
+        No orders yet!
+      </Text>
+    ),
+    [],
   );
 
   const renderItem = useCallback(
     ({ item }: { item: any }) => <OrderCard order={item} />,
-    [],
+    [ordersData],
   );
 
   return (
@@ -81,8 +93,10 @@ const Orders = () => {
         keyExtractor={item => item.id + item.items.productId}
         renderItem={renderItem}
         ListHeaderComponent={<OrderHeader />}
-        bounces={false}
+        ListEmptyComponent={!loading ? <OrderEmptyComponent /> : <></>}
         showsVerticalScrollIndicator={false}
+        onRefresh={fetchOrders}
+        refreshing={loading}
       />
       <Loader visible={loading} />
     </View>

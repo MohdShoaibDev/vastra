@@ -9,7 +9,7 @@ const Notifications = () => {
   const theme = useSelector((state: RootState) => state.theme);
   return (
     <View style={styles.container}>
-      <Header title="Notifications" showCart={false} style={styles.header} />
+      <Header title="Notifications" style={styles.header} />
       <Text
         style={{ ...styles.noNotificationText, color: theme.mainTextColor }}
       >

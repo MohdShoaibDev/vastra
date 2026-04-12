@@ -30,6 +30,7 @@ const Header = ({
 }: Props) => {
   const navigation = useAppNavigation();
   const theme = useSelector((state: RootState) => state.theme);
+  const { cart } = useSelector((state: RootState) => state.user);
   const { statusBarHeight } = useStatusBarHeight();
 
   const navigateToCartScreen = () => {
@@ -54,12 +55,17 @@ const Header = ({
 
       <View style={styles.right}>
         {showCart && (
-          <TouchableOpacity onPress={navigateToCartScreen}>
+          <TouchableOpacity onPress={navigateToCartScreen} style={styles.touch}>
             <Ionicons
               name="cart-outline"
               size={20}
-              color={theme.primaryIconColor}
+              color={
+                cart.count
+                  ? commonColors.primaryTextColor
+                  : theme.primaryIconColor
+              }
             />
+            {cart.count > 0 && <View style={styles.dot} />}
           </TouchableOpacity>
         )}
       </View>
@@ -93,5 +99,19 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 18,
     fontWeight: '600',
+  },
+
+  touch: {
+    position: 'relative',
+  },
+
+  dot: {
+    position: 'absolute',
+    right: 0,
+    top: -7,
+    height: 10,
+    width: 10,
+    borderRadius: 5,
+    backgroundColor: commonColors.primaryTextColor,
   },
 });

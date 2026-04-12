@@ -30,25 +30,25 @@ const SearchBar: React.FC<SearchBarProps> = ({
     setSearch(value);
   }, []);
 
-  const handleDebounce = () => {
-    let timer: any;
-    return (text: string) => {
-      if (timer) {
-        clearTimeout(timer);
-      }
-      timer = setTimeout(() => {
-        if (onSearch) {
-          onSearch(text.trim());
-        }
-      }, 400);
-    };
-  };
+  // const handleDebounce = () => {
+  //   let timer: any;
+  //   return (text: string) => {
+  //     if (timer) {
+  //       clearTimeout(timer);
+  //     }
+  //     timer = setTimeout(() => {
+  //       if (onSearch) {
+  //         onSearch(text.trim());
+  //       }
+  //     }, 400);
+  //   };
+  // };
 
-  const debouncing = useMemo(handleDebounce, [onSearch]);
+  // const debouncing = useMemo(handleDebounce, [onSearch]);
 
-  const searchHandler = (text: string) => {
-    setSearch(text);
-    debouncing(text);
+  const handleSearch = () => {
+    onSearch && onSearch(search);
+    // debouncing(text);
   };
 
   const clearSearch = () => {
@@ -63,12 +63,12 @@ const SearchBar: React.FC<SearchBarProps> = ({
       <View style={{ ...styles.searchBox, backgroundColor: theme.card }}>
         <Feather name="search" size={20} color={commonColors.gray} />
         <TextInput
-          autoFocus={true}
           value={search}
           placeholder="Search..."
           placeholderTextColor={`${theme.secondaryTextColor}`}
           style={{ ...styles.input, color: theme.secondaryTextColor }}
-          onChangeText={searchHandler}
+          onChangeText={setSearch}
+          onSubmitEditing={handleSearch}
         />
         {search && (
           <TouchableOpacity onPress={clearSearch}>

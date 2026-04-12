@@ -76,7 +76,7 @@ const AddAddress = () => {
 
   const defaultAddressHandler = (address: any) => {
     delete address['createdAt'];
-    dispatch(appUserDetailsHandler(address));
+    dispatch(appUserDetailsHandler({ address }));
   };
 
   const handleSave = async () => {
@@ -139,6 +139,12 @@ const AddAddress = () => {
             },
           ],
         });
+        defaultAddress &&
+          defaultAddressHandler({
+            id: allAddresses.data()?.addresses.length + 1,
+            ...addressData,
+            default: defaultAddress,
+          });
       }
       navigation.goBack();
     } catch (error) {
@@ -178,6 +184,9 @@ const AddAddress = () => {
       await updateDoc(addressesRef, {
         addresses: allAddresses,
       });
+      if (defaultAddress) {
+        defaultAddressHandler(allAddresses[id - 1]);
+      }
       showToast('success', 'Address has been updated successfully');
       navigation.goBack();
     } catch (err: any) {
@@ -200,6 +209,10 @@ const AddAddress = () => {
   return (
     <View style={{ ...styles.container, backgroundColor: theme.bgColor }}>
       <KeyboardAwareScrollView
+        enableOnAndroid={true}
+        keyboardShouldPersistTaps="handled"
+        extraScrollHeight={50}
+        enableAutomaticScroll={true}
         bounces={false}
         showsVerticalScrollIndicator={false}
       >

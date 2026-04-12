@@ -296,7 +296,7 @@ const Payment = () => {
             style={styles.button}
           />
           <Text style={{ marginTop: 15, color: theme.secondaryTextColor }}>
-            Note: Fake transaction for demo purpose only, don't add you card
+            Note: Fake transaction for demo purpose only, don't add your card
             details.
           </Text>
         </ScrollView>

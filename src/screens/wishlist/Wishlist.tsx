@@ -69,7 +69,7 @@ const Wishlist = () => {
     ({ item, index }: { item: any; index: number }) => {
       return (
         <ProductCard
-          index={item.id}
+          index={index}
           item={item}
           isWishlist={true}
           onPressWishList={handleWishlist}

@@ -9,7 +9,7 @@ import {
 } from 'react-native';
 import styles from '@screens/productDetails/style';
 import IconButton from '@components/buttons/IconButton';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '@redux/store/store';
 import Header from '@components/header/Header';
 import Loader from '@components/loader/Loader';
@@ -31,10 +31,13 @@ import { commonColors } from '@utility/appColors';
 import ReviewCard, { ReviewCardProps } from '@components/review/ReviewCard';
 import useAppNavigation from '@hooks/useAppNavigation';
 import { ScreenNames } from '@utility/screenNames';
+import { appUserDetailsHandler } from '@redux/slice/userSlice';
 const sizes = ['s', 'm', 'l', 'xl', '2xl', '3xl'];
 
 const ProductDetails = () => {
+  const dispatch = useDispatch();
   const theme = useSelector((state: RootState) => state.theme);
+  const { cart } = useSelector((state: RootState) => state.user);
   const { id } = useRoute().params;
   const navigation = useAppNavigation();
   const [productDetails, setProductDetails] = useState<Product | null>(null);
@@ -68,17 +71,17 @@ const ProductDetails = () => {
 
   const getProductFromCart = async () => {
     try {
-      if (!auth.currentUser) return;
-      const snapshot = await getDoc(
-        doc(getFirestore(), 'users', auth.currentUser.uid, 'cart', id),
+      const product = cart.items.filter(
+        (product: Product) => product.id === id,
       );
-      if (snapshot.exists()) {
-        setProductInCartData(snapshot.data());
+      if (product.length > 0) {
+        setProductInCartData(product[0]);
       } else {
         setProductInCartData({ quantity: 0 });
       }
     } catch (err: any) {
       console.log('error in getting product details', err?.message);
+      throw Error;
     }
   };
 
@@ -148,7 +151,7 @@ const ProductDetails = () => {
         id,
       );
       if (productInCartData.quantity === 0) {
-        await setDoc(cartRef, {
+        const _data = {
           name: productDetails?.title,
           price: productDetails?.price,
           description: productDetails?.description,
@@ -156,13 +159,35 @@ const ProductDetails = () => {
           sizes: productDetails?.size,
           size: selectedSize,
           quantity: 1,
-          createdAt: serverTimestamp(),
           maxPurchasedAtOnce: productDetails?.maxPurchasedAtOnce || 10,
-        });
+        };
+        await setDoc(cartRef, { ..._data, createdAt: serverTimestamp() });
         setProductInCartData({ quantity: 1 });
+        const cartNewData = {
+          count: cart.count + 1,
+          items: [...cart.items, { id, ..._data }],
+        };
+        dispatch(appUserDetailsHandler({ cart: cartNewData }));
       } else {
+        let quantity = 0;
+        const filterData = cart.items.filter((item: any) => {
+          if (item.id === id) {
+            quantity += item.quantity;
+            return false;
+          } else {
+            return true;
+          }
+        });
         await deleteDoc(cartRef);
         setProductInCartData({ quantity: 0 });
+        dispatch(
+          appUserDetailsHandler({
+            cart: {
+              count: cart.count - quantity,
+              items: filterData,
+            },
+          }),
+        );
       }
     } catch (err: any) {
       showToast('error', 'Something went wrong');
@@ -201,15 +226,20 @@ const ProductDetails = () => {
       {productDetails && (
         <ScrollView showsVerticalScrollIndicator={false} bounces={false}>
           <Header title="" style={styles.header} />
-          <FlatList
-            pagingEnabled
-            data={[1, 2, 3].map(_ => productDetails.image)}
-            horizontal
-            renderItem={renderThumbnail}
-            keyExtractor={(_, index) => index.toString()}
-            showsHorizontalScrollIndicator={false}
-            style={styles.thumbnailList}
-          />
+          <View style={styles.flatlistContainer}>
+            <FlatList
+              pagingEnabled
+              data={[1, 2, 3].map(_ => productDetails.image)}
+              horizontal
+              renderItem={renderThumbnail}
+              keyExtractor={(_, index) => index.toString()}
+              showsHorizontalScrollIndicator={false}
+              style={styles.thumbnailList}
+            />
+            <Text style={styles.totalRating}>
+              {productDetails.totalRating}({productDetails.reviewCount}) ⭐
+            </Text>
+          </View>
 
           <View style={styles.infoContainer}>
             <View style={styles.titleRow}>
@@ -262,7 +292,7 @@ const ProductDetails = () => {
                 <Text
                   style={{ ...styles.sectionTitle, color: theme.mainTextColor }}
                 >
-                  Reviews
+                  Reviews ({`${productDetails.reviewCount}`})
                 </Text>
                 <TouchableOpacity
                   activeOpacity={0.6}

@@ -1,5 +1,8 @@
 import { commonColors } from '@utility/appColors';
-import { getWidthRespectiveToScreen } from '@utility/helperMethod';
+import {
+  getHeightRespectiveToScreen,
+  getWidthRespectiveToScreen,
+} from '@utility/helperMethod';
 import { StyleSheet } from 'react-native';
 
 export default StyleSheet.create({
@@ -45,5 +48,12 @@ export default StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
+  },
+
+  noOrdersText: {
+    marginTop: getHeightRespectiveToScreen(25),
+    textAlign: 'center',
+    fontSize: 22,
+    fontWeight: '500',
   },
 });
